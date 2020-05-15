@@ -1,7 +1,8 @@
 ﻿#include <wx/wx.h>
-#include "MyProject1MyFrame1.h"
-#include "MyProject1MyFrame2.h"
-#include "MyProject1MyFrame3.h"
+#include "initFrame.h"
+#include "infoFrame.h"
+#include "editFrame.h"
+
 
 class MyApp : public wxApp {
 
@@ -16,7 +17,8 @@ IMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
 {
-    wxFrame* mainFrame = new MyProject1MyFrame1(NULL);
+    wxInitAllImageHandlers();
+    wxFrame* mainFrame = new InitFrame(NULL);
     mainFrame->Show(true);
     SetTopWindow(mainFrame);
 
