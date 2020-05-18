@@ -10,8 +10,10 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	wxBoxSizer* sizer2init;
 	sizer2init = new wxBoxSizer(wxVERTICAL);
 
-	loadedImagePanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	loadedImagePanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
 	loadedImagePanel->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT));
+	// loadedImagePanel->SetVirtualSize(3000, 3000);
+	loadedImagePanel->SetScrollRate(1, 1);
 
 	sizer2init->Add(loadedImagePanel, 1, wxEXPAND | wxALL, 5);
 
@@ -20,7 +22,8 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 	finishButton = new wxButton(this, wxID_ANY, wxT("Gotowe"), wxDefaultPosition, wxDefaultSize, 0);
 	sizer2init->Add(finishButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-
+	loadButton = new wxButton(this, wxID_ANY, wxT("Obrazek"), wxDefaultPosition, wxDefaultSize, 0);
+	sizer2init->Add(loadButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 
 	sizer1init->Add(sizer2init, 3, wxEXPAND, 5);
 
@@ -45,23 +48,39 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 	this->Centre(wxBOTH);
 
+
 	// Connect Events
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
+	loadButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::loadImage), NULL, this);
+
 }
 
 InitFrame::~InitFrame()
 {
 	// Disconnect Events
 	finishButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
+	loadButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::loadImage), NULL, this);
 
 }
 
 void InitFrame::openFrames( wxCommandEvent& event )
 {
-// TODO: Implement openFrames
+
 	wxFrame* infoFrame = new InfoFrame(NULL);
 	wxFrame* editFrame = new EditFrame(NULL);
 	editFrame->Show();
 	infoFrame->Show();
 	this->Close();
+
+}
+
+void InitFrame::loadImage(wxCommandEvent& event) {
+
+	wxClientDC dc(loadedImagePanel);
+	wxBufferedDC bdc(&dc);
+	loadedImagePanel->DoPrepareDC(bdc);
+	image.LoadFile("file.PNG", wxBITMAP_TYPE_ANY);
+	loadedImagePanel->SetVirtualSize(image.GetWidth(), image.GetHeight());
+	bdc.DrawBitmap(image, 0, 0);
+
 }

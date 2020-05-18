@@ -22,6 +22,7 @@
 #include <wx/choice.h>
 #include <wx/slider.h>
 #include <wx/listbox.h>
+#include <wx/dcbuffer.h>
 
 #include "infoFrame.h"
 #include "editFrame.h"
@@ -34,15 +35,17 @@ class InitFrame : public wxFrame
 
 protected:
 	wxBitmap image;
-	wxPanel* loadedImagePanel;
+	wxScrolledWindow* loadedImagePanel;
 	wxStaticLine* line1;
 	wxStaticLine* line2;
 	wxButton* finishButton;
+	wxButton* loadButton;
 
 	wxStaticText* framesDescription;
 	wxListBox* framesList;
 
 	void openFrames(wxCommandEvent& event);
+	void loadImage(wxCommandEvent& event);
 
 public:
 
