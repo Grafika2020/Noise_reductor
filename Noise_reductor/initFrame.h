@@ -25,6 +25,7 @@
 
 #include "infoFrame.h"
 #include "editFrame.h"
+#include "imageHandler.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class InitFrame
@@ -40,7 +41,7 @@ protected:
 	wxButton* finishButton;
 	wxStaticText* framesDescription;
 	wxListBox* framesList;
-
+	ImageHandler *m_imageHandler;
 	void openFrames(wxCommandEvent& event);
 
 public:

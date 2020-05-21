@@ -21,6 +21,7 @@
 #include <wx/choice.h>
 #include <wx/slider.h>
 #include <wx/listbox.h>
+#include "imageHandler.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class InfoFrame
@@ -32,14 +33,14 @@ private:
 protected:
 	wxStaticText* info;
 	wxButton* button;
-
+	ImageHandler *m_imageHandler;
 	// Virtual event handlers, overide them in your derived class
 	void closeInfo(wxCommandEvent& event);
 
 
 public:
 
-	InfoFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(326, 105), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
+	InfoFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(326, 105), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER, ImageHandler *imageHandler=nullptr);
 
 	~InfoFrame();
 	void OnClose(wxCloseEvent &evt);

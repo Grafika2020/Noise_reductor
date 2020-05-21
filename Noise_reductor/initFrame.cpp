@@ -47,6 +47,8 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 	this->Centre(wxBOTH);
 
+	m_imageHandler = new ImageHandler;
+
 	// Connect Events
 	
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
@@ -58,6 +60,7 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 InitFrame::~InitFrame()
 {
+	delete m_imageHandler;
 	// Disconnect Events
 	finishButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose), NULL, this);
@@ -76,11 +79,11 @@ void InitFrame::OnShow(wxShowEvent & evt)
 	
 
 
-	wxFileDialog Dialog(this, wxT("Wybierz plik"), wxT(""), wxT(""), wxT("JPGFile (*.jpg)|*.jpg"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxFileDialog Dialog(this, wxT("Wybierz plik"), wxT(""), wxT(""), wxT("Pictures (*.jpg, *.bmp)|*.jpg; *.bmp"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (Dialog.ShowModal() == wxID_OK) {
-		image.LoadFile(Dialog.GetPath(), wxBITMAP_TYPE_JPEG);
-		
+		//image.LoadFile(Dialog.GetPath(), wxBITMAP_TYPE_ANY);
+		m_imageHandler->setImage(Dialog.GetPath());
 	}
 	draw();
 
@@ -99,11 +102,11 @@ void InitFrame::draw()
 	wxClientDC clientDC(loadedImagePanel);
 	wxBufferedDC buff(&clientDC);
 	//loadedImagePanel->SetSize(image.GetSize());
-	loadedImagePanel->SetVirtualSize(image.GetSize());
+	loadedImagePanel->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
 	
 	loadedImagePanel->DoPrepareDC(buff);
 	
-	wxBitmap bmp(image);
+	wxBitmap bmp(m_imageHandler->getMainImage());
 	buff.DrawBitmap(bmp, wxPoint(0, 0));
 }
 

@@ -1,6 +1,6 @@
 #include "editFrame.h"
 
-EditFrame::EditFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
+EditFrame::EditFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, ImageHandler *imageHandler) : wxFrame(parent, id, title, pos, size, style),m_imageHandler(imageHandler)
 {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 	this->Hide();
