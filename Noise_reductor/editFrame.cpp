@@ -92,8 +92,14 @@ EditFrame::EditFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->Layout();
 
 	this->Centre(wxBOTH);
+	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
 }
 
 EditFrame::~EditFrame()
 {
+}
+
+void EditFrame::OnClose(wxCloseEvent & evt)
+{
+	GetParent()->Destroy();
 }

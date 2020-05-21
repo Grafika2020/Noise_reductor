@@ -17,7 +17,6 @@ IMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
 {
-    wxInitAllImageHandlers();
     wxFrame* mainFrame = new InitFrame(NULL);
     mainFrame->Show(true);
     SetTopWindow(mainFrame);

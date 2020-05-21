@@ -23,6 +23,7 @@ InfoFrame::InfoFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 	// Connect Events
 	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InfoFrame::closeInfo), NULL, this);
+	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InfoFrame::OnClose));
 }
 
 InfoFrame::~InfoFrame()
@@ -30,6 +31,11 @@ InfoFrame::~InfoFrame()
 	// Disconnect Events
 	button->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InfoFrame::closeInfo), NULL, this);
 
+}
+
+void InfoFrame::OnClose(wxCloseEvent &evt)
+{
+	GetParent()->Destroy();
 }
 
 void InfoFrame::closeInfo(wxCommandEvent& event)

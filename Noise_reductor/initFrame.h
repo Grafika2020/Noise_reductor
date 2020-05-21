@@ -33,12 +33,11 @@ class InitFrame : public wxFrame
 {
 
 protected:
-	wxBitmap image;
-	wxPanel* loadedImagePanel;
+	wxImage image;
+	wxScrolledWindow* loadedImagePanel;
 	wxStaticLine* line1;
 	wxStaticLine* line2;
 	wxButton* finishButton;
-
 	wxStaticText* framesDescription;
 	wxListBox* framesList;
 
@@ -49,5 +48,8 @@ public:
 	InitFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(910, 500), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~InitFrame();
-
+	void OnClose(wxCloseEvent &evt);
+	void OnShow(wxShowEvent &evt);
+	void OnUpdateUI(wxUpdateUIEvent &evt);
+	void draw();
 };

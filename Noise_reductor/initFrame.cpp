@@ -1,4 +1,5 @@
 #include "initFrame.h"
+#include <wx/dcbuffer.h>
 
 InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
 {
@@ -10,9 +11,10 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	wxBoxSizer* sizer2init;
 	sizer2init = new wxBoxSizer(wxVERTICAL);
 
-	loadedImagePanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	loadedImagePanel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxSize(1, 1), wxHSCROLL | wxVSCROLL);
 	loadedImagePanel->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT));
-
+	loadedImagePanel->SetScrollbars(25, 25, 20, 20);
+	loadedImagePanel->SetScrollRate(5, 5);
 	sizer2init->Add(loadedImagePanel, 1, wxEXPAND | wxALL, 5);
 
 	line1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
@@ -46,22 +48,72 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->Centre(wxBOTH);
 
 	// Connect Events
+	
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
+	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose),NULL,this);
+	this->Connect(wxEVT_SHOW, wxShowEventHandler(InitFrame::OnShow),NULL,this);
+	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI),NULL,this);
+	
 }
 
 InitFrame::~InitFrame()
 {
 	// Disconnect Events
 	finishButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
+	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose), NULL, this);
+	this->Disconnect(wxEVT_SHOW, wxShowEventHandler(InitFrame::OnShow), NULL, this);
+	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI), NULL, this);
+}
 
+void InitFrame::OnClose(wxCloseEvent & evt)
+{
+	Destroy();
+}
+
+void InitFrame::OnShow(wxShowEvent & evt)
+{
+	wxInitAllImageHandlers();
+	
+
+
+	wxFileDialog Dialog(this, wxT("Wybierz plik"), wxT(""), wxT(""), wxT("JPGFile (*.jpg)|*.jpg"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+	if (Dialog.ShowModal() == wxID_OK) {
+		image.LoadFile(Dialog.GetPath(), wxBITMAP_TYPE_JPEG);
+		
+	}
+	draw();
+
+
+}
+
+void InitFrame::OnUpdateUI(wxUpdateUIEvent & evt)
+{
+	draw();
+}
+
+
+
+void InitFrame::draw()
+{
+	wxClientDC clientDC(loadedImagePanel);
+	wxBufferedDC buff(&clientDC);
+	//loadedImagePanel->SetSize(image.GetSize());
+	loadedImagePanel->SetVirtualSize(image.GetSize());
+	
+	loadedImagePanel->DoPrepareDC(buff);
+	
+	wxBitmap bmp(image);
+	buff.DrawBitmap(bmp, wxPoint(0, 0));
 }
 
 void InitFrame::openFrames( wxCommandEvent& event )
 {
 // TODO: Implement openFrames
-	wxFrame* infoFrame = new InfoFrame(NULL);
-	wxFrame* editFrame = new EditFrame(NULL);
+	wxFrame* infoFrame = new InfoFrame(this);
+	wxFrame* editFrame = new EditFrame(this);
 	editFrame->Show();
 	infoFrame->Show();
-	this->Close();
+	this->Hide();
+	
 }
