@@ -1,6 +1,7 @@
 #include "editFrame.h"
 #include <wx/dcbuffer.h>
-#include <stdexcept>
+
+
 
 
 EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style),m_imageHandler(imageHandler)
@@ -36,15 +37,16 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	wxBoxSizer* sizer3chosenFragment;
 	sizer3chosenFragment = new wxBoxSizer(wxHORIZONTAL);
 
-	imageOrginal = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+	imageOrginal = new SynchronizedWindow(this, imageOrginalID, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
 	imageOrginal->SetScrollRate(5, 5);
 	imageOrginal->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT));
 
 	sizer3chosenFragment->Add(imageOrginal, 1, wxEXPAND | wxALL, 5);
 
-	imageModified = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+	imageModified = new SynchronizedWindow(this, imageModifiedID, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
 	imageModified->SetScrollRate(5, 5);
 	imageModified->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT));
+	
 
 	sizer3chosenFragment->Add(imageModified, 1, wxEXPAND | wxALL, 5);
 
@@ -97,6 +99,8 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	this->Centre(wxBOTH);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
+
+
 }
 
 EditFrame::~EditFrame()
@@ -116,9 +120,16 @@ void EditFrame::OnUpdateUI(wxUpdateUIEvent & evt)
 	draw();
 }
 
+void EditFrame::OnScroll(wxWindowID id, int x, int y)
+{
+	if (id ==imageOrginalID) imageModified->Scroll(x, y);
+	if (id == imageModifiedID) imageOrginal->Scroll(x, y);
+}
+
+
+
 void EditFrame::draw()
 {
-	
 		wxClientDC clientDCOriginal(imageOrginal);
 		wxClientDC clientDCModified(imageModified);
 		wxBufferedDC buffOriginal(&clientDCOriginal);

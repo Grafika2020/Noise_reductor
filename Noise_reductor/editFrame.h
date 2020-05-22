@@ -22,6 +22,11 @@
 #include <wx/slider.h>
 #include <wx/listbox.h>
 #include "imageHandler.h"
+#include "synchronizedWindow.h"
+
+
+#define imageOrginalID 5000
+#define imageModifiedID 5001
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class EditFrame
@@ -29,12 +34,12 @@
 class EditFrame : public wxFrame
 {
 private:
-
+	
 protected:
 	wxStaticText* text;
 	wxSpinButton* spin;
-	wxScrolledWindow* imageOrginal;
-	wxScrolledWindow* imageModified;
+	SynchronizedWindow* imageOrginal;
+	SynchronizedWindow* imageModified;
 	wxStaticLine* line;
 	wxChoice* choiceKanal;
 	wxSlider* slider1;
@@ -49,5 +54,7 @@ public:
 	~EditFrame();
 	void OnClose(wxCloseEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
+	void OnScroll(wxWindowID id, int x, int y);
 	void draw();
 };
+
