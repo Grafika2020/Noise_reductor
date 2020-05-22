@@ -43,6 +43,10 @@ protected:
 	wxListBox* framesList;
 	ImageHandler *m_imageHandler;
 	void openFrames(wxCommandEvent& event);
+	wxPoint first_click = wxPoint(0, 0);
+	wxPoint second_click = wxPoint(0, 0);
+	int frag_num = 0;
+	
 
 public:
 
@@ -54,4 +58,5 @@ public:
 	void OnScroll(wxScrollEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
 	void draw();
+	void add_frag(wxMouseEvent& event);
 };

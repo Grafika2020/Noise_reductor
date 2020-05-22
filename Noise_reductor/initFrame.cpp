@@ -32,7 +32,7 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	wxBoxSizer* sizer3init;
 	sizer3init = new wxBoxSizer(wxVERTICAL);
 
-	framesDescription = new wxStaticText(this, wxID_ANY, wxT("wybrano X fragmentów:"), wxDefaultPosition, wxDefaultSize, 0);
+	framesDescription = new wxStaticText(this, wxID_ANY, wxT("wybrano 0 fragmentów:"), wxDefaultPosition, wxDefaultSize, 0);
 	framesDescription->Wrap(-1);
 	sizer3init->Add(framesDescription, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 
@@ -48,12 +48,14 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	this->Centre(wxBOTH);
 
 	m_imageHandler = new ImageHandler;
-
 	// Connect Events
 	loadedImagePanel->Connect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose),NULL,this);
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI),NULL,this);
+	loadedImagePanel->Connect(wxEVT_MOTION, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
+	loadedImagePanel->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
+	loadedImagePanel->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
 	OnShow();
 }
 
@@ -62,6 +64,9 @@ InitFrame::~InitFrame()
 	delete m_imageHandler;
 	// Disconnect Events
 	loadedImagePanel->Disconnect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
+	loadedImagePanel->Disconnect(wxEVT_MOTION, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
+	loadedImagePanel->Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
+	loadedImagePanel->Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
 	finishButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose), NULL, this);
 	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI), NULL, this);
@@ -94,6 +99,7 @@ void InitFrame::OnScroll(wxScrollEvent & evt)
 void InitFrame::OnUpdateUI(wxUpdateUIEvent & evt)
 {
 	draw();
+	
 }
 
 
@@ -109,6 +115,24 @@ void InitFrame::draw()
 	
 	wxBitmap bmp(m_imageHandler->getMainImage());
 	buff.DrawBitmap(bmp, wxPoint(0, 0));
+}
+
+void InitFrame::add_frag(wxMouseEvent& event)
+{
+	if (event.LeftDown()) {
+		first_click = wxGetMousePosition();
+	}
+	if (event.LeftUp()) {
+		second_click = wxGetMousePosition();
+		wxArrayString description_arr;
+		wxString tmp_str = wxString::Format(wxT("(%i, %i),(%i, %i)"), first_click.x, first_click.y, second_click.x, second_click.y);
+		description_arr.Add(tmp_str);
+		wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click, second_click));
+		m_imageHandler->fragmenty.push_back(tmp_frag);
+		framesDescription->SetLabel(wxString::Format(wxT("wybrano %i fragmentów:"), ++frag_num));
+		framesList->InsertItems(description_arr, framesList->GetCount());
+	}
+
 }
 
 void InitFrame::openFrames( wxCommandEvent& event )
