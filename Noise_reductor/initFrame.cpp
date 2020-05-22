@@ -115,22 +115,42 @@ void InitFrame::draw()
 	
 	wxBitmap bmp(m_imageHandler->getMainImage());
 	buff.DrawBitmap(bmp, wxPoint(0, 0));
+	wxSize img_size = m_imageHandler->getMainImage().GetSize();
+	if (marking && moving_cursor.y < img_size.GetHeight() && moving_cursor.x < img_size.GetWidth()) {
+		buff.SetBrush(*wxTRANSPARENT_BRUSH);
+		buff.SetPen(wxPen(wxColour(160, 75, 75), 5));
+		buff.DrawRectangle(wxRect(first_click, moving_cursor));
+	}
+	
 }
 
 void InitFrame::add_frag(wxMouseEvent& event)
 {
+	
 	if (event.LeftDown()) {
-		first_click = wxGetMousePosition();
+		/*first_click = wxGetMousePosition();*/
+		first_click = event.GetPosition();
+	}
+	if (event.Dragging()) {
+		moving_cursor = event.GetPosition();
+		marking = true;
 	}
 	if (event.LeftUp()) {
-		second_click = wxGetMousePosition();
-		wxArrayString description_arr;
-		wxString tmp_str = wxString::Format(wxT("(%i, %i),(%i, %i)"), first_click.x, first_click.y, second_click.x, second_click.y);
-		description_arr.Add(tmp_str);
-		wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click, second_click));
-		m_imageHandler->fragmenty.push_back(tmp_frag);
-		framesDescription->SetLabel(wxString::Format(wxT("wybrano %i fragmentów:"), ++frag_num));
-		framesList->InsertItems(description_arr, framesList->GetCount());
+		
+		second_click = event.GetPosition();
+		
+		wxSize img_size = m_imageHandler->getMainImage().GetSize();
+		if (second_click.y <= img_size.GetHeight() && second_click.x <= img_size.GetWidth()){
+			wxArrayString description_arr;
+			wxString tmp_str = wxString::Format(wxT("(%i, %i),(%i, %i)"), first_click.x, first_click.y, second_click.x, second_click.y);
+			description_arr.Add(tmp_str);
+			marking = false;
+			wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click, second_click));
+			m_imageHandler->fragmenty.push_back(tmp_frag);
+			framesDescription->SetLabel(wxString::Format(wxT("wybrano %i fragmentów:"), ++frag_num));
+			framesList->InsertItems(description_arr, framesList->GetCount());
+		}
+		
 	}
 
 }

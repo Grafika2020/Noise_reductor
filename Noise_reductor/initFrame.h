@@ -45,6 +45,8 @@ protected:
 	void openFrames(wxCommandEvent& event);
 	wxPoint first_click = wxPoint(0, 0);
 	wxPoint second_click = wxPoint(0, 0);
+	wxPoint moving_cursor = wxPoint(0, 0);
+	bool marking = false;
 	int frag_num = 0;
 	
 
