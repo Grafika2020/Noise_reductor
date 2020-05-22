@@ -50,7 +50,8 @@ public:
 
 	~InitFrame();
 	void OnClose(wxCloseEvent &evt);
-	void OnShow(wxShowEvent &evt);
+	void OnShow();
+	void OnScroll(wxScrollEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
 	void draw();
 };

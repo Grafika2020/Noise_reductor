@@ -50,21 +50,20 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	m_imageHandler = new ImageHandler;
 
 	// Connect Events
-	
+	loadedImagePanel->Connect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose),NULL,this);
-	this->Connect(wxEVT_SHOW, wxShowEventHandler(InitFrame::OnShow),NULL,this);
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI),NULL,this);
-	
+	OnShow();
 }
 
 InitFrame::~InitFrame()
 {
 	delete m_imageHandler;
 	// Disconnect Events
+	loadedImagePanel->Disconnect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
 	finishButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose), NULL, this);
-	this->Disconnect(wxEVT_SHOW, wxShowEventHandler(InitFrame::OnShow), NULL, this);
 	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI), NULL, this);
 }
 
@@ -73,21 +72,23 @@ void InitFrame::OnClose(wxCloseEvent & evt)
 	Destroy();
 }
 
-void InitFrame::OnShow(wxShowEvent & evt)
+void InitFrame::OnShow()
 {
 	wxInitAllImageHandlers();
 	
-
-
 	wxFileDialog Dialog(this, wxT("Wybierz plik"), wxT(""), wxT(""), wxT("Pictures (*.jpg, *.bmp)|*.jpg; *.bmp"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (Dialog.ShowModal() == wxID_OK) {
-		//image.LoadFile(Dialog.GetPath(), wxBITMAP_TYPE_ANY);
 		m_imageHandler->setImage(Dialog.GetPath());
 	}
 	draw();
 
 
+}
+
+void InitFrame::OnScroll(wxScrollEvent & evt)
+{
+	draw();
 }
 
 void InitFrame::OnUpdateUI(wxUpdateUIEvent & evt)
@@ -101,7 +102,7 @@ void InitFrame::draw()
 {
 	wxClientDC clientDC(loadedImagePanel);
 	wxBufferedDC buff(&clientDC);
-	//loadedImagePanel->SetSize(image.GetSize());
+	
 	loadedImagePanel->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
 	
 	loadedImagePanel->DoPrepareDC(buff);

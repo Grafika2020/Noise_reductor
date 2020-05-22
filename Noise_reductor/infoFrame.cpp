@@ -30,7 +30,7 @@ InfoFrame::~InfoFrame()
 {
 	// Disconnect Events
 	button->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InfoFrame::closeInfo), NULL, this);
-
+	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InfoFrame::OnClose));
 }
 
 void InfoFrame::OnClose(wxCloseEvent &evt)
