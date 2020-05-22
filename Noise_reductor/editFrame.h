@@ -21,7 +21,7 @@
 #include <wx/choice.h>
 #include <wx/slider.h>
 #include <wx/listbox.h>
-#include "imageHandler.h">
+#include "imageHandler.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class EditFrame
@@ -44,8 +44,10 @@ protected:
 
 public:
 
-	EditFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(979, 560), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER, ImageHandler *imageHandler=nullptr);
+	EditFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(979, 560), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~EditFrame();
 	void OnClose(wxCloseEvent &evt);
+	void OnUpdateUI(wxUpdateUIEvent &evt);
+	void draw();
 };

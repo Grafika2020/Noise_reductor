@@ -1,6 +1,9 @@
 #include "editFrame.h"
+#include <wx/dcbuffer.h>
+#include <stdexcept>
 
-EditFrame::EditFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, ImageHandler *imageHandler) : wxFrame(parent, id, title, pos, size, style),m_imageHandler(imageHandler)
+
+EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style),m_imageHandler(imageHandler)
 {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 	this->Hide();
@@ -93,13 +96,47 @@ EditFrame::EditFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 	this->Centre(wxBOTH);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
+	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
 }
 
 EditFrame::~EditFrame()
 {
+	//Disconnect events
+	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
+	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
 }
 
 void EditFrame::OnClose(wxCloseEvent & evt)
 {
 	GetParent()->Destroy();
 }
+
+void EditFrame::OnUpdateUI(wxUpdateUIEvent & evt)
+{
+	draw();
+}
+
+void EditFrame::draw()
+{
+	
+		wxClientDC clientDCOriginal(imageOrginal);
+		wxClientDC clientDCModified(imageModified);
+		wxBufferedDC buffOriginal(&clientDCOriginal);
+		wxBufferedDC buffModified(&clientDCModified);
+
+
+		imageOrginal->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
+		imageModified->SetVirtualSize(m_imageHandler->getModifiedImage().GetSize());
+
+		imageOrginal->DoPrepareDC(buffOriginal);
+		imageModified->DoPrepareDC(buffModified);
+
+		wxBitmap bmpOri(m_imageHandler->getMainImage());
+		wxBitmap bmpMod(m_imageHandler->getModifiedImage());
+
+		buffOriginal.DrawBitmap(bmpOri, wxPoint(0, 0));
+		buffModified.DrawBitmap(bmpMod, wxPoint(0, 0));
+	
+}
+
+

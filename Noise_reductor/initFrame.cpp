@@ -115,7 +115,7 @@ void InitFrame::openFrames( wxCommandEvent& event )
 {
 // TODO: Implement openFrames
 	wxFrame* infoFrame = new InfoFrame(this);
-	wxFrame* editFrame = new EditFrame(this);
+	wxFrame* editFrame = new EditFrame(this, m_imageHandler);
 	editFrame->Show();
 	infoFrame->Show();
 	this->Hide();

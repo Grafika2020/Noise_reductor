@@ -40,7 +40,7 @@ protected:
 
 public:
 
-	InfoFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(326, 105), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER, ImageHandler *imageHandler=nullptr);
+	InfoFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(326, 105), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~InfoFrame();
 	void OnClose(wxCloseEvent &evt);
