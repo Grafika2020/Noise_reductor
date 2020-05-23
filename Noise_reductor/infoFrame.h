@@ -36,7 +36,7 @@ protected:
 	ImageHandler *m_imageHandler;
 	// Virtual event handlers, overide them in your derived class
 	void closeInfo(wxCommandEvent& event);
-
+	std::vector<std::string> temp;
 
 public:
 
@@ -44,5 +44,7 @@ public:
 
 	~InfoFrame();
 	void OnClose(wxCloseEvent &evt);
+
+	void readData();
 
 };
