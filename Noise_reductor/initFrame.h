@@ -46,6 +46,7 @@ protected:
 	wxPoint first_click = wxPoint(0, 0);
 	wxPoint second_click = wxPoint(0, 0);
 	wxPoint moving_cursor = wxPoint(0, 0);
+	std::vector<wxPoint> frags_cord;
 	bool marking = false;
 	int frag_num = 0;
 	
