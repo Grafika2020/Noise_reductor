@@ -37,14 +37,16 @@ protected:
 	// Virtual event handlers, overide them in your derived class
 	void closeInfo(wxCommandEvent& event);
 	std::vector<std::string> temp;
-
+	
 public:
 
-	InfoFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(326, 105), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
+	InfoFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 300), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~InfoFrame();
 	void OnClose(wxCloseEvent &evt);
 
 	void readData();
+	double max(double, double, double) const;
+	double min(double, double, double) const;
 
 };

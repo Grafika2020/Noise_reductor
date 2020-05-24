@@ -53,7 +53,7 @@ protected:
 
 public:
 
-	InitFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1200, 1000), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
+	InitFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~InitFrame();
 	void OnClose(wxCloseEvent &evt);

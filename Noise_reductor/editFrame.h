@@ -49,7 +49,7 @@ protected:
 
 public:
 
-	EditFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(979, 560), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
+	EditFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~EditFrame();
 	void OnClose(wxCloseEvent &evt);
