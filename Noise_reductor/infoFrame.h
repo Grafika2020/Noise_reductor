@@ -37,6 +37,7 @@ protected:
 	// Virtual event handlers, overide them in your derived class
 	void closeInfo(wxCommandEvent& event);
 	std::vector<std::string> temp;
+	int xd;
 	
 public:
 

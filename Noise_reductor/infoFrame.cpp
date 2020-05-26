@@ -59,13 +59,15 @@ void InfoFrame::readData() {
 		int elements = 0;
 		std::string new_data;
 		double avR, avB, avG, avL, avV;
-		unsigned long long int R, B, G;
+		int R, G, B;
 		double L, V;
 		R = B = G = L = V = 0;
 		double cmax, cmin;
 
-		for (int i = 0; i < frag.GetHeight(); ++i) {
-			for (int j = 0; j < frag.GetWidth(); ++j) {
+		xd = 0;
+
+		for (int i = 0; i < frag.GetWidth(); ++i) {
+			for (int j = 0; j < frag.GetHeight(); ++j) {
 
 				cmax = max(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);
 				cmin = min(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);
@@ -77,26 +79,31 @@ void InfoFrame::readData() {
 				L += (cmax + cmin) / 2.;
 
 				elements += 1;
+
+				if (frag.GetRed(i, j) < 255) {
+					xd += 1;
+				}
+
 			}
 		}
 
-		avR = R / static_cast<double>(elements);
-		avB = B / static_cast<double>(elements);
-		avG = G / static_cast<double>(elements);
-		avL = L / static_cast<double>(elements);
-		avV = V / static_cast<double>(elements);
+		avR = R / elements;
+		avB = B / elements;
+		avG = G / elements;
+		avL = L / elements;
+		avV = V / elements;
 		
 		double sdR, sdG, sdB, sdL, sdV;
 		sdR = sdG = sdB = sdL = sdV = 0;
-		for (int i = 0; i < frag.GetHeight(); ++i) {
-			for (int j = 0; j < frag.GetWidth(); ++j) {
+		for (int i = 0; i < frag.GetWidth(); ++i) {
+			for (int j = 0; j < frag.GetHeight(); ++j) {
 
 				cmax = max(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);
 				cmin = min(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);
 
 				sdR += pow(frag.GetRed(i, j) - avR, 2);
-				sdB += pow(frag.GetRed(i, j) - avB, 2);
-				sdG += pow(frag.GetRed(i, j) - avG, 2);
+				sdB += pow(frag.GetBlue(i, j) - avB, 2);
+				sdG += pow(frag.GetGreen(i, j) - avG, 2);
 				sdV += pow(cmax - avV, 2);
 				sdL += pow((cmax + cmin) / 2. - avL, 2);
 			}
