@@ -2,7 +2,7 @@
 
 InfoFrame::InfoFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style), m_imageHandler(imageHandler)
 {
-	/*readData();*/
+	readData();
 
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 	this->Hide();
@@ -64,8 +64,8 @@ void InfoFrame::readData() {
 		R = B = G = L = V = 0;
 		double cmax, cmin;
 
-		for (int i = 0; i < frag.GetHeight(); ++i) {
-			for (int j = 0; j < frag.GetWidth(); ++j) {
+		for (int i = 0; i < frag.GetWidth(); ++i) {
+			for (int j = 0; j < frag.GetHeight(); ++j) {
 
 				cmax = max(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);
 				cmin = min(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);
@@ -88,8 +88,8 @@ void InfoFrame::readData() {
 		
 		double sdR, sdG, sdB, sdL, sdV;
 		sdR = sdG = sdB = sdL = sdV = 0;
-		for (int i = 0; i < frag.GetHeight(); ++i) {
-			for (int j = 0; j < frag.GetWidth(); ++j) {
+		for (int i = 0; i < frag.GetWidth(); ++i) {
+			for (int j = 0; j < frag.GetHeight(); ++j) {
 
 				cmax = max(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);
 				cmin = min(frag.GetRed(i, j) / 255., frag.GetBlue(i, j) / 255., frag.GetGreen(i, j) / 255.);

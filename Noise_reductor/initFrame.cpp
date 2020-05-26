@@ -146,7 +146,7 @@ void InitFrame::add_frag(wxMouseEvent& event)
 	if (event.LeftUp()) {
 		second_click = event.GetPosition();
 		wxSize img_size = m_imageHandler->getMainImage().GetSize();
-		if (second_click.y <= img_size.GetHeight() && second_click.x <= img_size.GetWidth()){
+		if (second_click.y <= img_size.GetHeight()&& second_click.x <= img_size.GetWidth()){
 			marking = false;
 			frags_cord.push_back(second_click);
 			wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click, second_click));

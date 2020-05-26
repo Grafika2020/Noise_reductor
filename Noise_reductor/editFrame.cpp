@@ -135,9 +135,11 @@ EditFrame::~EditFrame()
 void EditFrame::gausssian_blur(wxCommandEvent& event)
 {
 	int  sigma = slider1->GetValue();
+	
 	wxSize visible_area = imageModified->GetClientSize();
 	wxPoint start_of_view = imageModified->GetViewStart();
 	wxImage original_img = m_imageHandler->getMainImage();
+
 	wxImage image_to_mod = m_imageHandler->getModifiedImage();
 	if (visible_area.GetWidth() > image_to_mod.GetWidth()) {
 		visible_area.SetWidth(image_to_mod.GetWidth());
@@ -149,22 +151,23 @@ void EditFrame::gausssian_blur(wxCommandEvent& event)
 
 	int col_repr = selectRepresentation->GetSelection();
 	int channel = 0;
-	blur_RGB(sigma, channel, visible_area, start_of_view, image_to_mod, original_img);
-	//switch (col_repr)
-	//{
-	//case 0:
-	//	channel = selectRGB->GetSelection();
-	//	blur_RGB(sigma, channel, visible_area, start_of_view, image_to_mod, original_img);
-	//	break;
-	//case 1:
-	//	channel = selectHSL->GetSelection();
-	//	break;
-	//case 2:
-	//	channel = selectHSV->GetSelection();
-	//	break;
-	//default:
-	//	break;
-	//}
+	switch (col_repr)
+	{
+	case 0:
+		channel = selectRGB->GetSelection();
+		blur_RGB(sigma, channel, visible_area, start_of_view, image_to_mod, original_img);
+		break;
+	case 1:
+		channel = selectHSL->GetSelection();
+		m_imageHandler->setModifiedImage(original_img);
+		break;
+	case 2:
+		m_imageHandler->setModifiedImage(original_img);
+		channel = selectHSV->GetSelection();
+		break;
+	default:
+		break;
+	}
 	draw();
 }
 
@@ -173,26 +176,64 @@ void EditFrame::blur_RGB(int sigma, int channel, wxSize visible_area, wxPoint st
 	cimg_library::CImg<unsigned char> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
-	//if (channel == 0) {
-	for (int i = 0; i < visible_area.GetWidth(); i++) {
-		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			image_to_blur(i, j, 0) = original_img.GetRed(x+i, y+j);
-			image_to_blur(i, j, 1) = 0;
-			image_to_blur(i, j, 2) = 0;
+	
+	if (channel == 0) {
+		for (int i = 0; i < visible_area.GetWidth(); i++) {
+			for (int j = 0; j < visible_area.GetHeight(); j++) {
+				image_to_blur(i, j, 0) = original_img.GetRed(x+i, y+j);
+				image_to_blur(i, j, 1) = 0;
+				image_to_blur(i, j, 2) = 0;
+			}
 		}
-	}
-	//}
-	image_to_blur.blur(10);
+		image_to_blur.blur(sigma);
 
-	for (int i = 0; i < visible_area.GetWidth(); i++) {
-		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			unsigned char gr = image_to_mod.GetGreen(x + i, y + j);
-			unsigned char bl = image_to_mod.GetBlue(x + i, y + j);
-			/*image_to_mod.SetRGB(x + i, y + j, image_to_blur(i, j, 0), image_to_mod.GetGreen(x + i, y + j), image_to_mod.GetBlue(x + i, y + j));*/
-			/*image_to_mod.SetRGB(x + i, y + j, image_to_blur(i, j, 0), image_to_blur(i, j, 1), image_to_blur(i, j, 2));*/
-			image_to_mod.SetRGB(x + i, y + j, image_to_blur(i, j, 0), gr, bl);
+		for (int i = 0; i < visible_area.GetWidth(); i++) {
+			for (int j = 0; j < visible_area.GetHeight(); j++) {
+				unsigned char gr = image_to_mod.GetGreen(x + i, y + j);
+				unsigned char bl = image_to_mod.GetBlue(x + i, y + j);
+				image_to_mod.SetRGB(x + i, y + j, image_to_blur(i, j, 0), gr, bl);
+			}
 		}
 	}
+	
+	if (channel == 1) {
+		for (int i = 0; i < visible_area.GetWidth(); i++) {
+			for (int j = 0; j < visible_area.GetHeight(); j++) {
+				image_to_blur(i, j, 0) = 0;
+				image_to_blur(i, j, 1) = image_to_mod.GetGreen(x + i, y + j);
+				image_to_blur(i, j, 2) = 0;
+			}
+		}
+		image_to_blur.blur(sigma);
+
+		for (int i = 0; i < visible_area.GetWidth(); i++) {
+			for (int j = 0; j < visible_area.GetHeight(); j++) {
+				unsigned char r = image_to_mod.GetRed(x + i, y + j);
+				unsigned char bl = image_to_mod.GetBlue(x + i, y + j);
+				image_to_mod.SetRGB(x + i, y + j,r, image_to_blur(i, j, 1), bl);
+			}
+		}
+	}
+	
+	if (channel == 2) {
+		for (int i = 0; i < visible_area.GetWidth(); i++) {
+			for (int j = 0; j < visible_area.GetHeight(); j++) {
+				image_to_blur(i, j, 0) = 0;
+				image_to_blur(i, j, 1) = 0;
+				image_to_blur(i, j, 2) = image_to_mod.GetBlue(x + i, y + j);
+			}
+		}
+		image_to_blur.blur(sigma);
+
+		for (int i = 0; i < visible_area.GetWidth(); i++) {
+			for (int j = 0; j < visible_area.GetHeight(); j++) {
+				unsigned char gr = image_to_mod.GetGreen(x + i, y + j);
+				unsigned char r = image_to_mod.GetRed(x + i, y + j);
+				image_to_mod.SetRGB(x + i, y + j, r, gr, image_to_blur(i, j, 2));
+			}
+		}
+	}
+	
 	m_imageHandler->setModifiedImage(image_to_mod);
 }
 
