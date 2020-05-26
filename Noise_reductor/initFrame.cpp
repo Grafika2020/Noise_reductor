@@ -86,6 +86,7 @@ void InitFrame::OnShow()
 	if (Dialog.ShowModal() == wxID_OK) {
 		m_imageHandler->setImage(Dialog.GetPath());
 	}
+
 	draw();
 
 
@@ -106,28 +107,31 @@ void InitFrame::OnUpdateUI(wxUpdateUIEvent & evt)
 
 void InitFrame::draw()
 {
-	wxClientDC clientDC(loadedImagePanel);
-	wxBufferedDC buff(&clientDC);
-	
-	loadedImagePanel->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
-	
-	loadedImagePanel->DoPrepareDC(buff);
-	
-	wxBitmap bmp(m_imageHandler->getMainImage());
-	buff.DrawBitmap(bmp, wxPoint(0, 0));
-	wxSize img_size = m_imageHandler->getMainImage().GetSize();
-	buff.SetBrush(*wxTRANSPARENT_BRUSH);
-	buff.SetPen(wxPen(wxColour(160, 75, 75), 5));
-	if (!frags_cord.empty() && frags_cord.size() % 2 == 0) {
-		for (unsigned i = 0; i < frags_cord.size(); i += 2) {
-			int j = i + 1;
-			buff.DrawRectangle(wxRect(frags_cord[i], frags_cord[j]));
-		}
+	if (m_imageHandler->getMainImage().IsOk()) {
+		wxClientDC clientDC(loadedImagePanel);
+		wxBufferedDC buff(&clientDC);
 
+		loadedImagePanel->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
+
+		loadedImagePanel->DoPrepareDC(buff);
+
+		wxBitmap bmp(m_imageHandler->getMainImage());
+		buff.DrawBitmap(bmp, wxPoint(0, 0));
+		wxSize img_size = m_imageHandler->getMainImage().GetSize();
+		buff.SetBrush(*wxTRANSPARENT_BRUSH);
+		buff.SetPen(wxPen(wxColour(160, 75, 75), 5));
+		if (!frags_cord.empty() && frags_cord.size() % 2 == 0) {
+			for (unsigned i = 0; i < frags_cord.size(); i += 2) {
+				int j = i + 1;
+				buff.DrawRectangle(wxRect(frags_cord[i], frags_cord[j]));
+			}
+
+		}
+		if (marking && moving_cursor.y < img_size.GetHeight() && moving_cursor.x < img_size.GetWidth()) {
+			buff.DrawRectangle(wxRect(first_click, moving_cursor));
+		}
 	}
-	if (marking && moving_cursor.y < img_size.GetHeight() && moving_cursor.x < img_size.GetWidth()) {
-		buff.DrawRectangle(wxRect(first_click, moving_cursor));
-	}
+	Close(true);
 	
 	
 }
