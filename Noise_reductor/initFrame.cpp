@@ -134,22 +134,27 @@ void InitFrame::draw()
 
 void InitFrame::add_frag(wxMouseEvent& event)
 {
+	windowMoved = loadedImagePanel->CalcUnscrolledPosition(wxPoint(0, 0));
 	if (event.LeftDown()) {
 		/*first_click = wxGetMousePosition();*/
 		first_click = event.GetPosition();
+		first_click += windowMoved;
 		frags_cord.push_back(first_click);
 	}
 	if (event.Dragging()) {
 		moving_cursor = event.GetPosition();
+		moving_cursor += windowMoved;
 		marking = true;
 	}
 	if (event.LeftUp()) {
 		second_click = event.GetPosition();
+		
+		second_click += windowMoved;
 		wxSize img_size = m_imageHandler->getMainImage().GetSize();
 		if (second_click.y <= img_size.GetHeight()&& second_click.x <= img_size.GetWidth()){
 			marking = false;
 			frags_cord.push_back(second_click);
-			wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click, second_click));
+			wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click,second_click));
 			m_imageHandler->getFragments().push_back(tmp_frag);
 
 			framesDescription->SetLabel(wxString::Format(wxT("wybrano %i fragmentów:"), ++frag_num));
