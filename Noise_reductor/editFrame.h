@@ -48,6 +48,7 @@ protected:
 	wxRadioBox* selectRGB;
 	wxRadioBox* selectHSL;
 	wxRadioBox* selectHSV;
+	wxButton* startButton;
 	ImageHandler* m_imageHandler;
 	
 public:

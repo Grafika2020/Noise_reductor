@@ -95,10 +95,12 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	sizer3suwaki = new wxBoxSizer(wxVERTICAL);
 
 	slider1 = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-	sizer3suwaki->Add(slider1, 0, wxALL, 5);
+	sizer3modifyFragemtns->Add(slider1, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
+	startButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj"), wxDefaultPosition, wxDefaultSize, 0);
+	sizer3modifyFragemtns->Add(startButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	sizer3modifyFragemtns->Add(sizer3suwaki, 0, wxALIGN_CENTER_VERTICAL, 5);
+	//sizer3modifyFragemtns->Add(sizer3suwaki, 0, wxALIGN_CENTER_VERTICAL, 5);
 
 
 	sizer3modifyFragemtns->Add(0, 0, 1, wxEXPAND, 5);
