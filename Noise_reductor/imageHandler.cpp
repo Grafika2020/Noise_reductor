@@ -13,7 +13,7 @@ const wxImage & ImageHandler::getMainImage() const
 	return m_mainImage;
 }
 
-const wxImage & ImageHandler::getModifiedImage() const
+wxImage & ImageHandler::getModifiedImage()
 {
 	return m_modifiedImage;
 }

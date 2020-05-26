@@ -56,6 +56,10 @@ public:
 	EditFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~EditFrame();
+	void gausssian_blur(wxCommandEvent& event);
+	void blur_RGB(int sigma, int channel, wxSize visible_area, wxPoint starrt_of_view, wxImage image_to_mod, wxImage original_img);
+	void blur_HSL();
+	void blur_HSV();
 	void OnClose(wxCloseEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
 	void OnRadioBox(wxCommandEvent &evt);

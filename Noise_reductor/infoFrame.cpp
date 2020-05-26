@@ -2,7 +2,7 @@
 
 InfoFrame::InfoFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style), m_imageHandler(imageHandler)
 {
-	readData();
+	/*readData();*/
 
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 	this->Hide();

@@ -11,11 +11,14 @@ public:
 	}
 	void setImage(wxString filePath);
 	const wxImage& getMainImage()const;
-	const wxImage& getModifiedImage()const;
+	wxImage& getModifiedImage();
+	void setModifiedImage(wxImage img) {
+		m_modifiedImage = img;
+	}
 	std::vector<wxImage>& getFragments() { return fragments; }
-	std::vector<wxImage> fragments;
+	
 private: 
 	wxImage m_mainImage;
 	wxImage m_modifiedImage;
-	
+	std::vector<wxImage> fragments;
 };
