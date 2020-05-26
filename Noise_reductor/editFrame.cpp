@@ -65,23 +65,37 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 
 	sizer3modifyFragemtns->Add(0, 0, 1, wxEXPAND, 5);
 
-	wxString choiceKanalChoices[] = { wxT("RGB"), wxT("HSL"), wxT("HSV"), wxT("LAB") };
-	int choiceKanalNChoices = sizeof(choiceKanalChoices) / sizeof(wxString);
-	choiceKanal = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, choiceKanalNChoices, choiceKanalChoices, 0);
-	choiceKanal->SetSelection(0);
-	sizer3modifyFragemtns->Add(choiceKanal, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	wxString selectRepresentationChoices[] = { wxT("RGB"), wxT("HSL"), wxT("HSV") };
+	int selectRepresentationNChoices = sizeof(selectRepresentationChoices) / sizeof(wxString);
+	selectRepresentation = new wxRadioBox(this, wxID_ANY, wxT("RGB"), wxDefaultPosition, wxDefaultSize, selectRepresentationNChoices, selectRepresentationChoices, 1, wxRA_SPECIFY_ROWS);
+	selectRepresentation->SetSelection(0);
+	sizer3modifyFragemtns->Add(selectRepresentation, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+	wxString selectRGBChoices[] = { wxT("R"), wxT("G"), wxT("B") };
+	int selectRGBNChoices = sizeof(selectRGBChoices) / sizeof(wxString);
+	selectRGB = new wxRadioBox(this, wxID_ANY, wxT("RGB"), wxDefaultPosition, wxDefaultSize, selectRGBNChoices, selectRGBChoices, 1, wxRA_SPECIFY_ROWS);
+	selectRGB->SetSelection(0);
+	sizer3modifyFragemtns->Add(selectRGB, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+	wxString selectHSLChoices[] = { wxT("L") };
+	int selectHSLNChoices = sizeof(selectHSLChoices) / sizeof(wxString);
+	selectHSL = new wxRadioBox(this, wxID_ANY, wxT("HSL"), wxDefaultPosition, wxDefaultSize, selectHSLNChoices, selectHSLChoices, 1, wxRA_SPECIFY_COLS);
+	selectHSL->SetSelection(0);
+	sizer3modifyFragemtns->Add(selectHSL, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	selectHSL->Enable(false);
+
+	wxString selectHSVChoices[] = { wxT("V") };
+	int selectHSVNChoices = sizeof(selectHSVChoices) / sizeof(wxString);
+	selectHSV = new wxRadioBox(this, wxID_ANY, wxT("HSV"), wxDefaultPosition, wxDefaultSize, selectHSVNChoices, selectHSVChoices, 1, wxRA_SPECIFY_COLS);
+	selectHSV->SetSelection(0);
+	sizer3modifyFragemtns->Add(selectHSV, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	selectHSV->Enable(false);
 
 	wxBoxSizer* sizer3suwaki;
 	sizer3suwaki = new wxBoxSizer(wxVERTICAL);
 
-	slider1 = new wxSlider(this, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
+	slider1 = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
 	sizer3suwaki->Add(slider1, 0, wxALL, 5);
-
-	slider2 = new wxSlider(this, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-	sizer3suwaki->Add(slider2, 0, wxALL, 5);
-
-	slider3 = new wxSlider(this, wxID_ANY, 50, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-	sizer3suwaki->Add(slider3, 0, wxALL, 5);
 
 
 	sizer3modifyFragemtns->Add(sizer3suwaki, 0, wxALIGN_CENTER_VERTICAL, 5);
@@ -99,12 +113,15 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	this->Centre(wxBOTH);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
-
+	this->Connect(wxEVT_RADIOBOX, wxCommandEventHandler(EditFrame::OnRadioBox));
+	//Bind(wxEVT_RADIOBOX, EditFrame::OnRadioBox);
 
 }
 
 EditFrame::~EditFrame()
 {
+	//To do deleting all objects
+
 	//Disconnect events
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
 	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
@@ -118,6 +135,33 @@ void EditFrame::OnClose(wxCloseEvent & evt)
 void EditFrame::OnUpdateUI(wxUpdateUIEvent & evt)
 {
 	draw();
+}
+
+void EditFrame::OnRadioBox(wxCommandEvent & evt)
+{
+	int selection = selectRepresentation->GetSelection();
+
+	if (selection!=m_lastselected) {
+		//m_imageHandler->resetImage(); tego nie ma a musi byæ napisane
+		if (selection == 0) {
+			selectRGB->Enable(true);
+			selectHSL->Enable(false);
+			selectHSV->Enable(false);
+		}
+		else if (selection == 1) {
+			selectRGB->Enable(false);
+			selectHSL->Enable(true);
+			selectHSV->Enable(false);
+		}
+		else {
+			selectRGB->Enable(false);
+			selectHSL->Enable(false);
+			selectHSV->Enable(true);
+		} 
+		m_lastselected = selection;
+	}
+	
+
 }
 
 void EditFrame::OnScroll(wxWindowID id, int x, int y)

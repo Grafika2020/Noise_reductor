@@ -21,6 +21,7 @@
 #include <wx/choice.h>
 #include <wx/slider.h>
 #include <wx/listbox.h>
+#include <wx/radiobox.h>
 #include "imageHandler.h"
 #include "synchronizedWindow.h"
 
@@ -34,6 +35,7 @@
 class EditFrame : public wxFrame
 {
 private:
+	int m_lastselected{ 0 };
 	
 protected:
 	wxStaticText* text;
@@ -41,12 +43,13 @@ protected:
 	SynchronizedWindow* imageOrginal;
 	SynchronizedWindow* imageModified;
 	wxStaticLine* line;
-	wxChoice* choiceKanal;
 	wxSlider* slider1;
-	wxSlider* slider2;
-	wxSlider* slider3;
-	ImageHandler *m_imageHandler;
-
+	wxRadioBox* selectRepresentation;
+	wxRadioBox* selectRGB;
+	wxRadioBox* selectHSL;
+	wxRadioBox* selectHSV;
+	ImageHandler* m_imageHandler;
+	
 public:
 
 	EditFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
@@ -54,6 +57,7 @@ public:
 	~EditFrame();
 	void OnClose(wxCloseEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
+	void OnRadioBox(wxCommandEvent &evt);
 	void OnScroll(wxWindowID id, int x, int y);
 	void draw();
 };
