@@ -137,7 +137,7 @@ void EditFrame::gausssian_blur(wxCommandEvent& event)
 	int  sigma = slider1->GetValue();
 	
 	wxSize visible_area = imageModified->GetClientSize();
-	wxPoint start_of_view = imageModified->GetViewStart();
+	wxPoint start_of_view = imageModified->CalcUnscrolledPosition(wxPoint(0, 0));
 	wxImage original_img = m_imageHandler->getMainImage();
 
 	wxImage image_to_mod = m_imageHandler->getModifiedImage();
