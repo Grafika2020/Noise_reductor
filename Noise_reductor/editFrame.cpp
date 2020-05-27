@@ -15,49 +15,33 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	wxBoxSizer* sizer3fragments;
 	sizer3fragments = new wxBoxSizer(wxVERTICAL);
 
-	wxBoxSizer* sizer3chooseFragment;
-	sizer3chooseFragment = new wxBoxSizer(wxHORIZONTAL);
-
-
-	sizer3chooseFragment->Add(0, 0, 1, wxEXPAND, 5);
-
-	text = new wxStaticText(this, wxID_ANY, wxT("Wybor fragmentu"), wxDefaultPosition, wxDefaultSize, 0);
-	text->Wrap(-1);
-	sizer3chooseFragment->Add(text, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-
-	spin = new wxSpinButton(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_HORIZONTAL);
-	sizer3chooseFragment->Add(spin, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-
-
-	sizer3chooseFragment->Add(0, 0, 1, wxEXPAND, 5);
-
-
-	sizer3fragments->Add(sizer3chooseFragment, 1, wxEXPAND | wxALIGN_RIGHT, 5);
 
 	wxBoxSizer* sizer3chosenFragment;
 	sizer3chosenFragment = new wxBoxSizer(wxHORIZONTAL);
 
+	line1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+	sizer3fragments->Add(line1, 0, wxEXPAND | wxALL, 20);
+
 	imageOrginal = new SynchronizedWindow(this, imageOrginalID, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
 	imageOrginal->SetScrollRate(5, 5);
 	imageOrginal->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT));
-
+	
 	sizer3chosenFragment->Add(imageOrginal, 1, wxEXPAND | wxALL, 5);
 
 	imageModified = new SynchronizedWindow(this, imageModifiedID, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
 	imageModified->SetScrollRate(5, 5);
 	imageModified->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT));
-	
 
 	sizer3chosenFragment->Add(imageModified, 1, wxEXPAND | wxALL, 5);
-
+	
 
 	sizer3fragments->Add(sizer3chosenFragment, 8, wxEXPAND, 5);
 
 
 	sizer3main->Add(sizer3fragments, 6, wxALIGN_CENTER_HORIZONTAL | wxEXPAND, 5);
 
-	line = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
-	sizer3main->Add(line, 0, wxEXPAND | wxALL, 5);
+	line2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+	sizer3main->Add(line2, 0, wxEXPAND | wxALL, 20);
 
 	wxBoxSizer* sizer3modifyFragemtns;
 	sizer3modifyFragemtns = new wxBoxSizer(wxHORIZONTAL);
@@ -67,7 +51,7 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 
 	wxString selectRepresentationChoices[] = { wxT("RGB"), wxT("HSL"), wxT("HSV") };
 	int selectRepresentationNChoices = sizeof(selectRepresentationChoices) / sizeof(wxString);
-	selectRepresentation = new wxRadioBox(this, wxID_ANY, wxT("RGB"), wxDefaultPosition, wxDefaultSize, selectRepresentationNChoices, selectRepresentationChoices, 1, wxRA_SPECIFY_ROWS);
+	selectRepresentation = new wxRadioBox(this, wxID_ANY, wxT("Wybierz reprezentacjê"), wxDefaultPosition, wxDefaultSize, selectRepresentationNChoices, selectRepresentationChoices, 1, wxRA_SPECIFY_ROWS);
 	selectRepresentation->SetSelection(0);
 	sizer3modifyFragemtns->Add(selectRepresentation, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
@@ -91,16 +75,22 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	sizer3modifyFragemtns->Add(selectHSV, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 	selectHSV->Enable(false);
 
-	wxBoxSizer* sizer3suwaki;
-	sizer3suwaki = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* sizerSuwak;
+	sizerSuwak = new wxBoxSizer(wxVERTICAL);
 
 	slider1 = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-	sizer3modifyFragemtns->Add(slider1, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	sizerSuwak->Add(slider1, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
+
+	sliderVal = new wxStaticText(this, wxID_ANY, wxT("0:"), wxDefaultPosition, wxDefaultSize);
+	sliderVal->Wrap(-1);
+	sizerSuwak->Add(sliderVal, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 2);
+
+	sizer3modifyFragemtns->Add(sizerSuwak, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	
 
 	startButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj"), wxDefaultPosition, wxDefaultSize, 0);
 	sizer3modifyFragemtns->Add(startButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	//sizer3modifyFragemtns->Add(sizer3suwaki, 0, wxALIGN_CENTER_VERTICAL, 5);
 
 
 	sizer3modifyFragemtns->Add(0, 0, 1, wxEXPAND, 5);
@@ -114,11 +104,11 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 
 	this->Centre(wxBOTH);
 
+	
 	startButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::gausssian_blur), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
 	this->Connect(wxEVT_RADIOBOX, wxCommandEventHandler(EditFrame::OnRadioBox));
-	//Bind(wxEVT_RADIOBOX, EditFrame::OnRadioBox);
 
 }
 
@@ -240,7 +230,7 @@ void EditFrame::blur_HSL(int sig, wxSize visible_area, wxPoint start_of_view, wx
 	cimg_library::CImg<float> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
-	float sigma = sig / 10.0;
+	float sigma = sig/10.0;
 
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
@@ -373,7 +363,7 @@ void EditFrame::draw()
 		wxBufferedDC buffOriginal(&clientDCOriginal);
 		wxBufferedDC buffModified(&clientDCModified);
 
-
+		
 		imageOrginal->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
 		imageModified->SetVirtualSize(m_imageHandler->getModifiedImage().GetSize());
 
@@ -385,7 +375,14 @@ void EditFrame::draw()
 
 		buffOriginal.DrawBitmap(bmpOri, wxPoint(0, 0));
 		buffModified.DrawBitmap(bmpMod, wxPoint(0, 0));
-	
+
+
+		///Not clever but works
+		int val = slider1->GetValue();
+		int a = val / 10;
+		int b = val % 10;
+		wxString str = std::to_string(a) + "." + std::to_string(b);
+		sliderVal->SetLabel(str);
 }
 
 

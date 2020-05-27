@@ -38,12 +38,13 @@ private:
 	int m_lastselected{ 0 };
 	
 protected:
-	wxStaticText* text;
-	wxSpinButton* spin;
+	
 	SynchronizedWindow* imageOrginal;
 	SynchronizedWindow* imageModified;
-	wxStaticLine* line;
+	wxStaticLine* line1;
+	wxStaticLine* line2;
 	wxSlider* slider1;
+	wxStaticText* sliderVal;
 	wxRadioBox* selectRepresentation;
 	wxRadioBox* selectRGB;
 	wxRadioBox* selectHSL;

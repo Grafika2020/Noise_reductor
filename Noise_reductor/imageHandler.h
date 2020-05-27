@@ -7,7 +7,6 @@ class ImageHandler {
 public:
 	ImageHandler() = default;
 	~ImageHandler() {
-		std::cout << "usuwanko";
 	}
 	void setImage(wxString filePath);
 	const wxImage& getMainImage()const;
