@@ -131,7 +131,10 @@ void InitFrame::draw()
 			buff.DrawRectangle(wxRect(first_click, moving_cursor));
 		}
 	}
-	Close(true);
+	else {
+		Close(true);
+	}
+	
 	
 	
 }
