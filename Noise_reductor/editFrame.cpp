@@ -1,5 +1,6 @@
 #include "editFrame.h"
 #include <wx/dcbuffer.h>
+#include <wx/filedlg.h>
 #include "CImg.h"
 #include <iostream>
 
@@ -91,13 +92,25 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	startButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj"), wxDefaultPosition, wxDefaultSize, 0);
 	sizer3modifyFragemtns->Add(startButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-
+	resetButton = new wxButton(this, wxID_ANY, wxT("Reset"), wxDefaultPosition, wxDefaultSize, 0);
+	sizer3modifyFragemtns->Add(resetButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
 	sizer3modifyFragemtns->Add(0, 0, 1, wxEXPAND, 5);
-
-
 	sizer3main->Add(sizer3modifyFragemtns, 1, wxEXPAND, 5);
 
+
+	wxBoxSizer* sizerSaveButton;
+	sizerSaveButton = new wxBoxSizer(wxHORIZONTAL);
+
+	sizerSaveButton->Add(0, 0, 1, wxEXPAND, 2);
+
+	saveButton = new wxButton(this, wxID_ANY, wxT("Zapisz do pliku"), wxDefaultPosition, wxDefaultSize, 0);
+	sizerSaveButton->Add(saveButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
+
+	sizerSaveButton->Add(0, 0, 1, wxEXPAND, 2);
+
+
+	sizer3main->Add(sizerSaveButton, 1, wxEXPAND, 5);
 
 	this->SetSizer(sizer3main);
 	this->Layout();
@@ -106,6 +119,8 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 
 	
 	startButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::gausssian_blur), NULL, this);
+	resetButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::OnReset), NULL, this);
+	saveButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::Save), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
 	this->Connect(wxEVT_RADIOBOX, wxCommandEventHandler(EditFrame::OnRadioBox));
@@ -114,12 +129,13 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 
 EditFrame::~EditFrame()
 {
-	//To do deleting all objects
-
 	//Disconnect events
 	startButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::gausssian_blur), NULL, this);
+	resetButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::OnReset), NULL, this);
+	saveButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::Save), NULL, this);
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
 	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(EditFrame::OnUpdateUI));
+	this->Disconnect(wxEVT_RADIOBOX, wxCommandEventHandler(EditFrame::OnRadioBox));
 }
 
 void EditFrame::gausssian_blur(wxCommandEvent& event)
@@ -145,16 +161,16 @@ void EditFrame::gausssian_blur(wxCommandEvent& event)
 	{
 	case 0:
 		channel = selectRGB->GetSelection();
-		m_imageHandler->setModifiedImage(original_img);
+		m_imageHandler->resetModifiedImage();
 		blur_RGB(sigma, channel, visible_area, start_of_view, image_to_mod, original_img);
 		break;
 	case 1:
 		channel = selectHSL->GetSelection();
-		m_imageHandler->setModifiedImage(original_img);
+		m_imageHandler->resetModifiedImage();
 		blur_HSL(sigma, visible_area, start_of_view, image_to_mod, original_img);
 		break;
 	case 2:
-		m_imageHandler->setModifiedImage(original_img);
+		m_imageHandler->resetModifiedImage();
 		channel = selectHSV->GetSelection();
 		blur_HSV(sigma, visible_area, start_of_view, image_to_mod, original_img);
 		break;
@@ -353,6 +369,42 @@ void EditFrame::OnScroll(wxWindowID id, int x, int y)
 	if (id == imageModifiedID) imageOrginal->Scroll(x, y);
 }
 
+void EditFrame::OnReset(wxCommandEvent & event)
+{
+	m_imageHandler->resetModifiedImage();
+	slider1->SetValue(0);
+}
+
+void EditFrame::Save(wxCommandEvent & event)
+{
+	
+	wxInitAllImageHandlers();
+
+	wxString filePath;
+	wxFileDialog saveDialog(this, _("Wybierz plik:"), _(""), _("result.jpg"), _(".jpg"), wxFD_SAVE);
+	if (saveDialog.ShowModal() == wxID_OK) {
+		Refresh();
+
+		filePath = saveDialog.GetPath();
+
+		wxBitmap bitmapToSave(m_imageHandler->getModifiedImage());
+
+		wxImage imageToSave = bitmapToSave.ConvertToImage();
+		imageToSave.SaveFile(filePath, wxBITMAP_TYPE_JPEG);
+	}
+	
+}
+
+void EditFrame::setSliderLabel()
+{
+	//Not clever but works
+	int val = slider1->GetValue();
+	int a = val / 10;
+	int b = val % 10;
+	wxString str = std::to_string(a) + "." + std::to_string(b);
+	sliderVal->SetLabel(str);
+}
+
 
 
 void EditFrame::draw()
@@ -377,21 +429,9 @@ void EditFrame::draw()
 		buffModified.DrawBitmap(bmpMod, wxPoint(0, 0));
 
 
-		///Not clever but works
-		int val = slider1->GetValue();
-		int a = val / 10;
-		int b = val % 10;
-		wxString str = std::to_string(a) + "." + std::to_string(b);
-		sliderVal->SetLabel(str);
+		setSliderLabel();
 }
 
 
-unsigned char EditFrame::getValue(unsigned char R, unsigned char G, unsigned char B) 
-{
-	float r = R / 255;
-	float g = G / 255;
-	float b = B / 255;
-	return r > g ? (r > b ? r : b) : (g > b ? g : b);
 
-}
 

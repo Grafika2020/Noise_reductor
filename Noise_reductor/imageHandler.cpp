@@ -17,3 +17,8 @@ wxImage & ImageHandler::getModifiedImage()
 {
 	return m_modifiedImage;
 }
+
+void ImageHandler::resetModifiedImage()
+{
+	m_modifiedImage = m_mainImage;
+}

@@ -14,6 +14,7 @@ public:
 	void setModifiedImage(wxImage img) {
 		m_modifiedImage = img;
 	}
+	void resetModifiedImage();
 	std::vector<wxImage>& getFragments() { return fragments; }
 	
 private: 

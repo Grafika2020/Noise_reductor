@@ -50,6 +50,8 @@ protected:
 	wxRadioBox* selectHSL;
 	wxRadioBox* selectHSV;
 	wxButton* startButton;
+	wxButton* resetButton;
+	wxButton* saveButton;
 	ImageHandler* m_imageHandler;
 	
 public:
@@ -61,11 +63,13 @@ public:
 	void blur_RGB(int sig, int channel, wxSize visible_area, wxPoint starrt_of_view, wxImage image_to_mod, wxImage original_img);
 	void blur_HSL(int sig, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
 	void blur_HSV(int sig, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
-	unsigned char getValue(unsigned char R, unsigned char G, unsigned char B);
 	void OnClose(wxCloseEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
 	void OnRadioBox(wxCommandEvent &evt);
 	void OnScroll(wxWindowID id, int x, int y);
+	void OnReset(wxCommandEvent& event);
+	void Save(wxCommandEvent& event);
+	void setSliderLabel();
 	void draw();
 };
 
