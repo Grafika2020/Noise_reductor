@@ -39,6 +39,7 @@ protected:
 	wxStaticLine* line1;
 	wxStaticLine* line2;
 	wxButton* finishButton;
+	wxButton* addBlackImageButton;
 	wxStaticText* framesDescription;
 	wxListBox* framesList;
 	ImageHandler *m_imageHandler;
@@ -63,4 +64,5 @@ public:
 	void OnUpdateUI(wxUpdateUIEvent &evt);
 	void draw();
 	void add_frag(wxMouseEvent& event);
+	void addBlackImage(wxCommandEvent &evt);
 };

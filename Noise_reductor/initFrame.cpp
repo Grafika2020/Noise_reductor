@@ -1,5 +1,6 @@
 #include "initFrame.h"
 #include <wx/dcbuffer.h>
+#include <wx/msgdlg.h>
 
 InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
 {
@@ -19,6 +20,9 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 
 	line1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
 	sizer2init->Add(line1, 0, wxEXPAND | wxALL, 5);
+
+	addBlackImageButton = new wxButton(this, wxID_ANY, wxT("Dodaj czarn¹ klatkê"), wxDefaultPosition, wxDefaultSize, 0);
+	sizer2init->Add(addBlackImageButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 
 	finishButton = new wxButton(this, wxID_ANY, wxT("Gotowe"), wxDefaultPosition, wxDefaultSize, 0);
 	sizer2init->Add(finishButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
@@ -50,6 +54,7 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	m_imageHandler = new ImageHandler;
 	// Connect Events
 	loadedImagePanel->Connect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
+	addBlackImageButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::addBlackImage), NULL, this);
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose),NULL,this);
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI),NULL,this);
@@ -173,6 +178,45 @@ void InitFrame::add_frag(wxMouseEvent& event)
 		}
 		
 	}
+
+}
+
+void InitFrame::addBlackImage(wxCommandEvent & evt)
+{
+	wxInitAllImageHandlers();
+
+	wxFileDialog Dialog(this, wxT("Wybierz plik"), wxT(""), wxT(""), wxT("Pictures (*.jpg, *.bmp)|*.jpg; *.bmp"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxImage blackImage;
+	if (Dialog.ShowModal() == wxID_OK) {
+		blackImage.LoadFile(Dialog.GetPath(), wxBITMAP_TYPE_ANY);
+	}
+		if (blackImage.GetSize() != m_imageHandler->getMainImage().GetSize()) {
+			wxString msg;
+			if (blackImage.GetSize() == wxSize(0, 0)) {
+				msg = "Nie podano zdjêcia";
+			}
+			else {
+				msg = "B³êdny rozmiar klatki \n Czarna klatka musi mieæ rozmiar g³ównego obrazu.";
+			}
+			wxMessageDialog message(this, msg, wxT("B³¹d ³adowania klatki"), wxOK);
+			message.ShowModal();
+			
+		}
+		else {
+			m_imageHandler->setBlackImage(blackImage);
+			bool result = m_imageHandler->substractBlackImage();
+			wxString msg;
+			if (result) {
+				msg = "Klatka zosta³a odjêta";
+			}
+			else {
+				msg = "Wyst¹pi³ problem";
+			}
+			wxMessageDialog message(this, msg, wxT("Sukces"), wxOK);
+			message.ShowModal();
+		}
+	
+
 
 }
 
