@@ -222,7 +222,7 @@ void InitFrame::addBlackImage(wxCommandEvent & evt)
 
 void InitFrame::openFrames( wxCommandEvent& event )
 {
-// TODO: Implement openFrames
+
 	wxFrame* infoFrame = new InfoFrame(this, m_imageHandler);
 	wxFrame* editFrame = new EditFrame(this, m_imageHandler);
 	editFrame->Show();
