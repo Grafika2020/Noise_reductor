@@ -86,6 +86,7 @@ void InitFrame::OnShow()
 	if (Dialog.ShowModal() == wxID_OK) {
 		m_imageHandler->setImage(Dialog.GetPath());
 	}
+
 	draw();
 
 
@@ -106,50 +107,61 @@ void InitFrame::OnUpdateUI(wxUpdateUIEvent & evt)
 
 void InitFrame::draw()
 {
-	wxClientDC clientDC(loadedImagePanel);
-	wxBufferedDC buff(&clientDC);
-	
-	loadedImagePanel->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
-	
-	loadedImagePanel->DoPrepareDC(buff);
-	
-	wxBitmap bmp(m_imageHandler->getMainImage());
-	buff.DrawBitmap(bmp, wxPoint(0, 0));
-	wxSize img_size = m_imageHandler->getMainImage().GetSize();
-	buff.SetBrush(*wxTRANSPARENT_BRUSH);
-	buff.SetPen(wxPen(wxColour(160, 75, 75), 5));
-	if (!frags_cord.empty() && frags_cord.size() % 2 == 0) {
-		for (unsigned i = 0; i < frags_cord.size(); i += 2) {
-			int j = i + 1;
-			buff.DrawRectangle(wxRect(frags_cord[i], frags_cord[j]));
-		}
+	if (m_imageHandler->getMainImage().IsOk()) {
+		wxClientDC clientDC(loadedImagePanel);
+		wxBufferedDC buff(&clientDC);
 
+		loadedImagePanel->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
+
+		loadedImagePanel->DoPrepareDC(buff);
+
+		wxBitmap bmp(m_imageHandler->getMainImage());
+		buff.DrawBitmap(bmp, wxPoint(0, 0));
+		wxSize img_size = m_imageHandler->getMainImage().GetSize();
+		buff.SetBrush(*wxTRANSPARENT_BRUSH);
+		buff.SetPen(wxPen(wxColour(160, 75, 75), 5));
+		if (!frags_cord.empty() && frags_cord.size() % 2 == 0) {
+			for (unsigned i = 0; i < frags_cord.size(); i += 2) {
+				int j = i + 1;
+				buff.DrawRectangle(wxRect(frags_cord[i], frags_cord[j]));
+			}
+
+		}
+		if (marking && moving_cursor.y < img_size.GetHeight() && moving_cursor.x < img_size.GetWidth()) {
+			buff.DrawRectangle(wxRect(first_click, moving_cursor));
+		}
 	}
-	if (marking && moving_cursor.y < img_size.GetHeight() && moving_cursor.x < img_size.GetWidth()) {
-		buff.DrawRectangle(wxRect(first_click, moving_cursor));
+	else {
+		Close(true);
 	}
+	
 	
 	
 }
 
 void InitFrame::add_frag(wxMouseEvent& event)
 {
+	windowMoved = loadedImagePanel->CalcUnscrolledPosition(wxPoint(0, 0));
 	if (event.LeftDown()) {
 		/*first_click = wxGetMousePosition();*/
 		first_click = event.GetPosition();
+		first_click += windowMoved;
 		frags_cord.push_back(first_click);
 	}
 	if (event.Dragging()) {
 		moving_cursor = event.GetPosition();
+		moving_cursor += windowMoved;
 		marking = true;
 	}
 	if (event.LeftUp()) {
 		second_click = event.GetPosition();
+		
+		second_click += windowMoved;
 		wxSize img_size = m_imageHandler->getMainImage().GetSize();
-		if (second_click.y <= img_size.GetHeight() && second_click.x <= img_size.GetWidth()){
+		if (second_click.y <= img_size.GetHeight()&& second_click.x <= img_size.GetWidth()){
 			marking = false;
 			frags_cord.push_back(second_click);
-			wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click, second_click));
+			wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click,second_click));
 			m_imageHandler->getFragments().push_back(tmp_frag);
 
 			framesDescription->SetLabel(wxString::Format(wxT("wybrano %i fragmentów:"), ++frag_num));
@@ -166,7 +178,7 @@ void InitFrame::add_frag(wxMouseEvent& event)
 
 void InitFrame::openFrames( wxCommandEvent& event )
 {
-// TODO: Implement openFrames
+
 	wxFrame* infoFrame = new InfoFrame(this, m_imageHandler);
 	wxFrame* editFrame = new EditFrame(this, m_imageHandler);
 	editFrame->Show();

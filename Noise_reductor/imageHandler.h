@@ -6,16 +6,16 @@
 class ImageHandler {
 public:
 	ImageHandler() = default;
-	~ImageHandler() {
-		std::cout << "usuwanko";
-	}
+	~ImageHandler() {}
 	void setImage(wxString filePath);
 	const wxImage& getMainImage()const;
-	const wxImage& getModifiedImage()const;
+	wxImage& getModifiedImage();
+	void setModifiedImage(wxImage img);
+	void resetModifiedImage();
 	std::vector<wxImage>& getFragments() { return fragments; }
-	std::vector<wxImage> fragments;
+	
 private: 
 	wxImage m_mainImage;
 	wxImage m_modifiedImage;
-	
+	std::vector<wxImage> fragments;
 };

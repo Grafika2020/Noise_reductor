@@ -31,13 +31,11 @@ class InfoFrame : public wxFrame
 private:
 
 protected:
-	wxStaticText* info;
 	wxButton* button;
 	ImageHandler *m_imageHandler;
+	wxListBox* listBox;
 	// Virtual event handlers, overide them in your derived class
-	void closeInfo(wxCommandEvent& event);
-	std::vector<std::string> temp;
-	int xd;
+	void closeInfo(wxCommandEvent& event); 
 	
 public:
 
