@@ -89,8 +89,17 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	sizer3modifyFragemtns->Add(sizerSuwak, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 	
 
-	startButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj"), wxDefaultPosition, wxDefaultSize, 0);
-	sizer3modifyFragemtns->Add(startButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	wxBoxSizer* sizerOdszum;
+	sizerOdszum = new wxBoxSizer(wxVERTICAL);
+
+	startButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj fragment"), wxDefaultPosition, wxDefaultSize, 0);
+	sizerOdszum->Add(startButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+	fullImageButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj ca³y obraz"), wxDefaultPosition, wxDefaultSize, 0);
+	sizerOdszum->Add(fullImageButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+	sizer3modifyFragemtns->Add(sizerOdszum, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
 
 	resetButton = new wxButton(this, wxID_ANY, wxT("Reset"), wxDefaultPosition, wxDefaultSize, 0);
 	sizer3modifyFragemtns->Add(resetButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
@@ -118,7 +127,8 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	this->Centre(wxBOTH);
 
 	
-	startButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::gausssian_blur), NULL, this);
+	startButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::blurFragment), NULL, this);
+	fullImageButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::blurFull), NULL, this);
 	resetButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::OnReset), NULL, this);
 	saveButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::Save), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
@@ -130,7 +140,8 @@ EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 EditFrame::~EditFrame()
 {
 	//Disconnect events
-	startButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::gausssian_blur), NULL, this);
+	startButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::blurFragment), NULL, this);
+	fullImageButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::blurFull), NULL, this);
 	resetButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::OnReset), NULL, this);
 	saveButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(EditFrame::Save), NULL, this);
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(EditFrame::OnClose));
@@ -138,22 +149,32 @@ EditFrame::~EditFrame()
 	this->Disconnect(wxEVT_RADIOBOX, wxCommandEventHandler(EditFrame::OnRadioBox));
 }
 
-void EditFrame::gausssian_blur(wxCommandEvent& event)
+void EditFrame::gausssian_blur(bool fragment)
 {
-	int  sigma = slider1->GetValue();
-	
-	wxSize visible_area = imageModified->GetClientSize();
-	wxPoint start_of_view = imageModified->CalcUnscrolledPosition(wxPoint(0, 0));
-	wxImage original_img = m_imageHandler->getMainImage();
+	int  sig = slider1->GetValue();
+	float sigma = sig / 10.0;
 
+	wxImage original_img = m_imageHandler->getMainImage();
 	wxImage image_to_mod = m_imageHandler->getModifiedImage();
-	if (visible_area.GetWidth() > image_to_mod.GetWidth()) {
-		visible_area.SetWidth(image_to_mod.GetWidth());
-	}
-	if (visible_area.GetHeight() > image_to_mod.GetHeight()) {
-		visible_area.SetHeight(image_to_mod.GetHeight());
-	}
+	wxSize visible_area;
+	wxPoint start_of_view;
 	
+	if (fragment) {
+		visible_area = imageModified->GetClientSize();
+		start_of_view = imageModified->CalcUnscrolledPosition(wxPoint(0, 0));
+
+		if (visible_area.GetWidth() > image_to_mod.GetWidth()) {
+			visible_area.SetWidth(image_to_mod.GetWidth());
+		}
+		if (visible_area.GetHeight() > image_to_mod.GetHeight()) {
+			visible_area.SetHeight(image_to_mod.GetHeight());
+		}
+	}
+	else {
+		visible_area = m_imageHandler->getMainImage().GetSize();
+		start_of_view = wxPoint(0, 0);
+
+	}
 
 	int col_repr = selectRepresentation->GetSelection();
 	int channel = 0;
@@ -180,12 +201,11 @@ void EditFrame::gausssian_blur(wxCommandEvent& event)
 	draw();
 }
 
-void EditFrame::blur_RGB(int sig, int channel, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
+void EditFrame::blur_RGB(float sigma, int channel, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
 {
 	cimg_library::CImg<unsigned char> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 2);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
-	float sigma = sig / 10.0;
 	
 	if (channel == 0) {
 		for (int i = 0; i < visible_area.GetWidth(); i++) {
@@ -241,12 +261,11 @@ void EditFrame::blur_RGB(int sig, int channel, wxSize visible_area, wxPoint star
 	m_imageHandler->setModifiedImage(image_to_mod);
 }
 
-void EditFrame::blur_HSL(int sig, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
+void EditFrame::blur_HSL(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
 {
 	cimg_library::CImg<float> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
-	float sigma = sig/10.0;
 
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
@@ -282,12 +301,11 @@ void EditFrame::blur_HSL(int sig, wxSize visible_area, wxPoint start_of_view, wx
 	m_imageHandler->setModifiedImage(image_to_mod);
 }
 
-void EditFrame::blur_HSV(int sig, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
+void EditFrame::blur_HSV(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
 {
 	cimg_library::CImg<float> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
-	float sigma = sig / 10.0;
 	
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
@@ -324,8 +342,6 @@ void EditFrame::blur_HSV(int sig, wxSize visible_area, wxPoint start_of_view, wx
 
 }
 
-
-
 void EditFrame::OnClose(wxCloseEvent & evt)
 {
 	GetParent()->Destroy();
@@ -334,6 +350,7 @@ void EditFrame::OnClose(wxCloseEvent & evt)
 void EditFrame::OnUpdateUI(wxUpdateUIEvent & evt)
 {
 	draw();
+
 }
 
 void EditFrame::OnRadioBox(wxCommandEvent & evt)
@@ -395,6 +412,16 @@ void EditFrame::Save(wxCommandEvent & event)
 	
 }
 
+void EditFrame::blurFragment(wxCommandEvent & event)
+{
+	gausssian_blur();
+}
+
+void EditFrame::blurFull(wxCommandEvent & event)
+{
+	gausssian_blur(false);
+}
+
 void EditFrame::setSliderLabel()
 {
 	//Not clever but works
@@ -405,10 +432,9 @@ void EditFrame::setSliderLabel()
 	sliderVal->SetLabel(str);
 }
 
-
-
 void EditFrame::draw()
-{
+{		
+		
 	
 		wxClientDC clientDCOriginal(imageOrginal);
 		wxClientDC clientDCModified(imageModified);

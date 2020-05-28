@@ -50,6 +50,7 @@ protected:
 	wxRadioBox* selectHSL;
 	wxRadioBox* selectHSV;
 	wxButton* startButton;
+	wxButton* fullImageButton;
 	wxButton* resetButton;
 	wxButton* saveButton;
 	ImageHandler* m_imageHandler;
@@ -59,16 +60,18 @@ public:
 	EditFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~EditFrame();
-	void gausssian_blur(wxCommandEvent& event);
-	void blur_RGB(int sig, int channel, wxSize visible_area, wxPoint starrt_of_view, wxImage image_to_mod, wxImage original_img);
-	void blur_HSL(int sig, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
-	void blur_HSV(int sig, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
+	void gausssian_blur(bool fragment = true);
+	void blur_RGB(float sigma, int channel, wxSize visible_area, wxPoint starrt_of_view, wxImage image_to_mod, wxImage original_img);
+	void blur_HSL(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
+	void blur_HSV(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
 	void OnClose(wxCloseEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
 	void OnRadioBox(wxCommandEvent &evt);
 	void OnScroll(wxWindowID id, int x, int y);
 	void OnReset(wxCommandEvent& event);
 	void Save(wxCommandEvent& event);
+	void blurFragment(wxCommandEvent& event);
+	void blurFull(wxCommandEvent &event);
 	void setSliderLabel();
 	void draw();
 };

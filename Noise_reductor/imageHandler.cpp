@@ -1,4 +1,6 @@
 #include "imageHandler.h"
+#include "CImg.h"
+
 
 
 
@@ -16,6 +18,12 @@ const wxImage & ImageHandler::getMainImage() const
 wxImage & ImageHandler::getModifiedImage()
 {
 	return m_modifiedImage;
+}
+
+
+void ImageHandler::setModifiedImage(wxImage img)
+{
+	m_modifiedImage = img;
 }
 
 void ImageHandler::resetModifiedImage()
