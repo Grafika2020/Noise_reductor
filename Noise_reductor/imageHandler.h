@@ -15,7 +15,7 @@ public:
 	bool substractBlackImage();
 	bool isBlackImage()const;
 	void resetModifiedImage();
-	std::vector<wxImage>& getFragments() { return fragments; }
+	std::vector<wxImage>& getFragments();
 	
 private: 
 	wxImage m_mainImage;

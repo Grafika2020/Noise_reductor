@@ -63,3 +63,8 @@ void ImageHandler::resetModifiedImage()
 {
 	m_modifiedImage = m_mainImage;
 }
+
+std::vector<wxImage>& ImageHandler::getFragments()
+{
+	return fragments;
+}

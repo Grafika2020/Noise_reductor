@@ -63,6 +63,6 @@ public:
 	void OnScroll(wxScrollEvent &evt);
 	void OnUpdateUI(wxUpdateUIEvent &evt);
 	void draw();
-	void add_frag(wxMouseEvent& event);
+	void addFrag(wxMouseEvent& event);
 	void addBlackImage(wxCommandEvent &evt);
 };

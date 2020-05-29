@@ -145,7 +145,10 @@ void InfoFrame::readData() {
 
 		++i;
 	}
-	listBox->InsertItems(str_arr, listBox->GetCount());
+	if (!m_imageHandler->getFragments().empty()) {
+		listBox->InsertItems(str_arr, listBox->GetCount());
+	}
+	
 
 
 }

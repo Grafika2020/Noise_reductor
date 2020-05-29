@@ -58,9 +58,9 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose),NULL,this);
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI),NULL,this);
-	loadedImagePanel->Connect(wxEVT_MOTION, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
-	loadedImagePanel->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
-	loadedImagePanel->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
+	loadedImagePanel->Connect(wxEVT_MOTION, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
+	loadedImagePanel->Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
+	loadedImagePanel->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
 	OnShow();
 }
 
@@ -69,9 +69,9 @@ InitFrame::~InitFrame()
 	delete m_imageHandler;
 	// Disconnect Events
 	loadedImagePanel->Disconnect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
-	loadedImagePanel->Disconnect(wxEVT_MOTION, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
-	loadedImagePanel->Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
-	loadedImagePanel->Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(InitFrame::add_frag), NULL, this);
+	loadedImagePanel->Disconnect(wxEVT_MOTION, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
+	loadedImagePanel->Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
+	loadedImagePanel->Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
 	finishButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose), NULL, this);
 	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI), NULL, this);
@@ -144,11 +144,10 @@ void InitFrame::draw()
 	
 }
 
-void InitFrame::add_frag(wxMouseEvent& event)
+void InitFrame::addFrag(wxMouseEvent& event)
 {
 	windowMoved = loadedImagePanel->CalcUnscrolledPosition(wxPoint(0, 0));
 	if (event.LeftDown()) {
-		/*first_click = wxGetMousePosition();*/
 		first_click = event.GetPosition();
 		first_click += windowMoved;
 		frags_cord.push_back(first_click);
@@ -160,7 +159,6 @@ void InitFrame::add_frag(wxMouseEvent& event)
 	}
 	if (event.LeftUp()) {
 		second_click = event.GetPosition();
-		
 		second_click += windowMoved;
 		wxSize img_size = m_imageHandler->getMainImage().GetSize();
 		if (second_click.y <= img_size.GetHeight()&& second_click.x <= img_size.GetWidth()){
@@ -170,7 +168,6 @@ void InitFrame::add_frag(wxMouseEvent& event)
 			m_imageHandler->getFragments().push_back(tmp_frag);
 
 			framesDescription->SetLabel(wxString::Format(wxT("wybrano %i fragmentów:"), ++frag_num));
-
 			wxArrayString description_arr;
 			wxString tmp_str = wxString::Format(wxT("(%i, %i),(%i, %i)"), first_click.x, first_click.y, second_click.x, second_click.y);
 			description_arr.Add(tmp_str);
@@ -190,31 +187,31 @@ void InitFrame::addBlackImage(wxCommandEvent & evt)
 	if (Dialog.ShowModal() == wxID_OK) {
 		blackImage.LoadFile(Dialog.GetPath(), wxBITMAP_TYPE_ANY);
 	}
-		if (blackImage.GetSize() != m_imageHandler->getMainImage().GetSize()) {
-			wxString msg;
-			if (blackImage.GetSize() == wxSize(0, 0)) {
-				msg = "Nie podano zdjêcia";
-			}
-			else {
-				msg = "B³êdny rozmiar klatki \n Czarna klatka musi mieæ rozmiar g³ównego obrazu.";
-			}
-			wxMessageDialog message(this, msg, wxT("B³¹d ³adowania klatki"), wxOK);
-			message.ShowModal();
-			
+	if (blackImage.GetSize() != m_imageHandler->getMainImage().GetSize()) {
+		wxString msg;
+		if (blackImage.GetSize() == wxSize(0, 0)) {
+			msg = "Nie podano zdjêcia";
 		}
 		else {
-			m_imageHandler->setBlackImage(blackImage);
-			bool result = m_imageHandler->substractBlackImage();
-			wxString msg;
-			if (result) {
-				msg = "Klatka zosta³a odjêta";
-			}
-			else {
-				msg = "Wyst¹pi³ problem";
-			}
-			wxMessageDialog message(this, msg, wxT("Sukces"), wxOK);
-			message.ShowModal();
+			msg = "B³êdny rozmiar klatki \n Czarna klatka musi mieæ rozmiar g³ównego obrazu.";
 		}
+		wxMessageDialog message(this, msg, wxT("B³¹d ³adowania klatki"), wxOK);
+		message.ShowModal();
+			
+	}
+	else {
+		m_imageHandler->setBlackImage(blackImage);
+		bool result = m_imageHandler->substractBlackImage();
+		wxString msg;
+		if (result) {
+			msg = "Klatka zosta³a odjêta";
+		}
+		else {
+			msg = "Wyst¹pi³ problem";
+		}
+		wxMessageDialog message(this, msg, wxT("Sukces"), wxOK);
+		message.ShowModal();
+	}
 	
 
 

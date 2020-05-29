@@ -358,7 +358,6 @@ void EditFrame::OnRadioBox(wxCommandEvent & evt)
 	int selection = selectRepresentation->GetSelection();
 
 	if (selection!=m_lastselected) {
-		//m_imageHandler->resetImage(); tego nie ma a musi byæ napisane
 		if (selection == 0) {
 			selectRGB->Enable(true);
 			selectHSL->Enable(false);
@@ -424,7 +423,6 @@ void EditFrame::blurFull(wxCommandEvent & event)
 
 void EditFrame::setSliderLabel()
 {
-	//Not clever but works
 	int val = slider1->GetValue();
 	int a = val / 10;
 	int b = val % 10;
