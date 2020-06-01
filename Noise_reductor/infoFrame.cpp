@@ -113,30 +113,42 @@ void InfoFrame::readData() {
 		new_data += std::to_string(i);
 		str_arr.Add(wxString(new_data));
 
-		new_data = "";
-		new_data += "srednie: R:";
-		new_data += std::to_string(avR);
+		std::stringstream stream_avR, stream_avB, stream_avG,
+			stream_avV, stream_avL, stream_sdR, stream_sdB,
+			stream_sdG, stream_sdV, stream_sdL;
+
+		new_data = "srednie:               R:";
+		stream_avR << std::fixed << std::setprecision(2) << avR;
+		new_data += stream_avR.str();
 		new_data += ", B:";
-		new_data += std::to_string(avB);
+		stream_avB << std::fixed << std::setprecision(2) << avB;
+		new_data += stream_avB.str();
 		new_data += ", G:";
-		new_data += std::to_string(avG);
+		stream_avG << std::fixed << std::setprecision(2) << avG;
+		new_data += stream_avG.str();
 		new_data += ", V:";
-		new_data += std::to_string(avV);
+		stream_avV << std::fixed << std::setprecision(2) << avV;
+		new_data += stream_avV.str();
 		new_data += ", L:";
-		new_data += std::to_string(avL);
+		stream_avL << std::fixed << std::setprecision(2) << avL;
+		new_data += stream_avL.str();
 		str_arr.Add(wxString(new_data));
 
-		new_data = "";
-		new_data += "odchylenia standardowe: R:";
-		new_data += std::to_string(sdR);
+		new_data = "odchyl. stand.: R:";
+		stream_sdR << std::fixed << std::setprecision(2) << sdR;
+		new_data += stream_sdR.str();
 		new_data += "%, B:";
-		new_data += std::to_string(sdB);
+		stream_sdB << std::fixed << std::setprecision(2) << sdB;
+		new_data += stream_sdB.str();
 		new_data += "%, G:";
-		new_data += std::to_string(sdG);
+		stream_sdG << std::fixed << std::setprecision(2) << sdG;
+		new_data += stream_sdG.str();
 		new_data += "%, V:";
-		new_data += std::to_string(sdV);
+		stream_sdV << std::fixed << std::setprecision(2) << sdV;
+		new_data += stream_sdV.str();
 		new_data += "%, L:";
-		new_data += std::to_string(sdL);
+		stream_sdL << std::fixed << std::setprecision(2) << sdL;
+		new_data += stream_sdL.str();
 		new_data += "%";
 		str_arr.Add(wxString(new_data));
 
