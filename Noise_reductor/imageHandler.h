@@ -12,7 +12,7 @@ public:
 	wxImage& getModifiedImage();
 	void setModifiedImage(wxImage img);
 	void setBlackImage(wxImage img);
-	bool substractBlackImage();
+	void substractBlackImage(float level=0.0);
 	bool isBlackImage()const;
 	void resetModifiedImage();
 	std::vector<wxImage>& getFragments();

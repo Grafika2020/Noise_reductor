@@ -31,14 +31,14 @@ void ImageHandler::setBlackImage(wxImage img)
 	blackImageStatus = true;
 }
 
-bool ImageHandler::substractBlackImage()
+void ImageHandler::substractBlackImage(float level)
 {
 	if (isBlackImage()) {
 		for (int i = 0; i < m_mainImage.GetWidth(); i++) {
 			for (int j = 0; j < m_mainImage.GetHeight(); j++) {
-				int r = m_mainImage.GetRed(i, j) - m_blackImage.GetRed(i, j);
-				int g = m_mainImage.GetGreen(i, j) - m_blackImage.GetGreen(i, j);
-				int b = m_mainImage.GetBlue(i, j) - m_blackImage.GetBlue(i, j);
+				int r = m_mainImage.GetRed(i, j) - level*m_blackImage.GetRed(i, j);
+				int g = m_mainImage.GetGreen(i, j) - level*m_blackImage.GetGreen(i, j);
+				int b = m_mainImage.GetBlue(i, j) - level*m_blackImage.GetBlue(i, j);
 
 				r = (r >= 0) ? r : 0;
 				g = (g >= 0) ? g : 0;
@@ -47,9 +47,9 @@ bool ImageHandler::substractBlackImage()
 			}
 		}
 		resetModifiedImage();
-		return true;
+		
 	}
-	return false;
+	
 	
 
 }

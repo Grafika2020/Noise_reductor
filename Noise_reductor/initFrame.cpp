@@ -21,8 +21,43 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	line1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
 	sizer2init->Add(line1, 0, wxEXPAND | wxALL, 5);
 
+	wxBoxSizer* blackFrameSizer;
+	blackFrameSizer = new wxBoxSizer(wxHORIZONTAL);
+	blackFrameSizer->Add(0, 0, 1, wxEXPAND, 5);
+
 	addBlackImageButton = new wxButton(this, wxID_ANY, wxT("Dodaj czarn¹ klatkê"), wxDefaultPosition, wxDefaultSize, 0);
-	sizer2init->Add(addBlackImageButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+	blackFrameSizer->Add(addBlackImageButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+	wxBoxSizer* sizerSuwak;
+	sizerSuwak = new wxBoxSizer(wxVERTICAL);
+	sizerSuwak->Add(0, 0, 1, wxEXPAND, 5);
+
+	sliderDesc = new wxStaticText(this, wxID_ANY, wxT("Ustaw wspó³czynnik klatki"), wxDefaultPosition, wxDefaultSize);
+	sliderDesc->Wrap(-1);
+	sizerSuwak->Add(sliderDesc, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 2);
+
+
+	slider = new wxSlider(this, wxID_ANY, 0, 0, 10, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
+	slider->Enable(false);
+	sizerSuwak->Add(slider, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 2);
+
+
+	sliderVal = new wxStaticText(this, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize);
+	sliderVal->Wrap(-1);
+	sizerSuwak->Add(sliderVal, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 2);
+	
+	blackFrameSizer->Add(sizerSuwak, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+	
+	substractFrame = new wxButton(this, wxID_ANY, wxT("Odejmij"), wxDefaultPosition, wxDefaultSize, 0);
+	substractFrame->Enable(false);
+	blackFrameSizer->Add(substractFrame, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+
+
+	blackFrameSizer->Add(0, 0, 1, wxEXPAND, 5);
+
+	sizer2init->Add(blackFrameSizer, 0, wxEXPAND, 5);
+
 
 	finishButton = new wxButton(this, wxID_ANY, wxT("Gotowe"), wxDefaultPosition, wxDefaultSize, 0);
 	sizer2init->Add(finishButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
@@ -55,6 +90,7 @@ InitFrame::InitFrame(wxWindow* parent, wxWindowID id, const wxString& title, con
 	// Connect Events
 	loadedImagePanel->Connect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
 	addBlackImageButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::addBlackImage), NULL, this);
+	substractFrame->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::substract), NULL, this);
 	finishButton->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::openFrames), NULL, this);
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InitFrame::OnClose),NULL,this);
 	this->Connect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI),NULL,this);
@@ -68,6 +104,8 @@ InitFrame::~InitFrame()
 {
 	delete m_imageHandler;
 	// Disconnect Events
+	addBlackImageButton->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::addBlackImage), NULL, this);
+	substractFrame->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InitFrame::substract), NULL, this);
 	loadedImagePanel->Disconnect(wxEVT_SCROLLBAR, wxScrollEventHandler(InitFrame::OnScroll), NULL, this);
 	loadedImagePanel->Disconnect(wxEVT_MOTION, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
 	loadedImagePanel->Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(InitFrame::addFrag), NULL, this);
@@ -108,6 +146,14 @@ void InitFrame::OnUpdateUI(wxUpdateUIEvent & evt)
 	
 }
 
+void InitFrame::setSliderLabel()
+{
+	int val = slider->GetValue();
+	int a = val / 10;
+	int b = val % 10;
+	wxString str = std::to_string(a) + "." + std::to_string(b);
+	sliderVal->SetLabel(str);
+}
 
 
 void InitFrame::draw()
@@ -141,7 +187,7 @@ void InitFrame::draw()
 	}
 	
 	
-	
+	setSliderLabel();
 }
 
 void InitFrame::addFrag(wxMouseEvent& event)
@@ -190,7 +236,7 @@ void InitFrame::addBlackImage(wxCommandEvent & evt)
 	if (blackImage.GetSize() != m_imageHandler->getMainImage().GetSize()) {
 		wxString msg;
 		if (blackImage.GetSize() == wxSize(0, 0)) {
-			msg = "Nie podano zdjêcia";
+			msg = "Nie podano obrazu";
 		}
 		else {
 			msg = "B³êdny rozmiar klatki \n Czarna klatka musi mieæ rozmiar g³ównego obrazu.";
@@ -201,27 +247,30 @@ void InitFrame::addBlackImage(wxCommandEvent & evt)
 	}
 	else {
 		m_imageHandler->setBlackImage(blackImage);
-		bool result = m_imageHandler->substractBlackImage();
 		wxString msg;
-		if (result) {
-			msg = "Klatka zosta³a odjêta";
-		}
-		else {
-			msg = "Wyst¹pi³ problem";
-		}
+		msg = "Klatka zosta³a dodana poprawnie";
 		wxMessageDialog message(this, msg, wxT("Sukces"), wxOK);
 		message.ShowModal();
+		substractFrame->Enable(true);
+		slider->Enable(true);
 	}
 	
 
 
 }
 
+void InitFrame::substract(wxCommandEvent & evt)
+{
+	float level = slider->GetValue()/10.0;
+	m_imageHandler->substractBlackImage(level);
+	
+}
+
 void InitFrame::openFrames( wxCommandEvent& event )
 {
 
-	wxFrame* infoFrame = new InfoFrame(this, m_imageHandler);
-	wxFrame* editFrame = new EditFrame(this, m_imageHandler);
+	wxFrame* infoFrame = new InfoFrame(this, m_imageHandler, wxID_ANY, wxString("Informacje o obrazie"),wxDefaultPosition, wxSize(400,600), wxDEFAULT_FRAME_STYLE);
+	wxFrame* editFrame = new EditFrame(this, m_imageHandler, wxID_ANY, wxString("Edytuj obraz"), wxDefaultPosition, wxSize(1000, 600), wxDEFAULT_FRAME_STYLE);
 	editFrame->Show();
 	infoFrame->Show();
 	this->Hide();

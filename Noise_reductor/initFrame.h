@@ -38,6 +38,10 @@ protected:
 	wxScrolledWindow* loadedImagePanel;
 	wxStaticLine* line1;
 	wxStaticLine* line2;
+	wxSlider* slider;
+	wxStaticText* sliderDesc;
+	wxStaticText* sliderVal;
+	wxButton* substractFrame;
 	wxButton* finishButton;
 	wxButton* addBlackImageButton;
 	wxStaticText* framesDescription;
@@ -65,4 +69,6 @@ public:
 	void draw();
 	void addFrag(wxMouseEvent& event);
 	void addBlackImage(wxCommandEvent &evt);
+	void substract(wxCommandEvent &evt);
+	void setSliderLabel();
 };
