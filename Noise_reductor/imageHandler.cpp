@@ -68,3 +68,13 @@ std::vector<wxImage>& ImageHandler::getFragments()
 {
 	return fragments;
 }
+
+void ImageHandler::updateFragments() {
+
+	std::vector<wxImage> newFragments;
+	for (int i = 0; i < fragments.size(); ++i) {
+		wxImage tmp_frag = getModifiedImage().GetSubImage(wxRect(frag_pos1[i], frag_pos2[i]));
+		newFragments.push_back(tmp_frag);
+	}
+	fragments = newFragments;
+}
