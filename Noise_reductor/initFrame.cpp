@@ -272,8 +272,8 @@ void InitFrame::substract(wxCommandEvent & evt)
 void InitFrame::openFrames( wxCommandEvent& event )
 {
 
-	InfoFrame* infoFrame = new InfoFrame(this, m_imageHandler);
-	EditFrame* editFrame = new EditFrame(this, infoFrame, m_imageHandler);
+	InfoFrame* infoFrame = new InfoFrame(this, m_imageHandler,wxID_ANY,wxString("Informacje o obrazie"),wxDefaultPosition,wxSize(400,600), wxDEFAULT_FRAME_STYLE);
+	EditFrame* editFrame = new EditFrame(this, infoFrame, m_imageHandler, wxID_ANY, wxString("Edytuj obraz"), wxDefaultPosition, wxSize(900, 600), wxDEFAULT_FRAME_STYLE);
 	editFrame->Show();
 	infoFrame->Show();
 	this->Hide();

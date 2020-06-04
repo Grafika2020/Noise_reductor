@@ -16,7 +16,7 @@ SynchronizedWindow::SynchronizedWindow(wxWindow *parent, wxWindowID id, const wx
 
 }
 
-// this is the IMPORTANT bit! 
+
 void SynchronizedWindow::OnScroll(wxScrollWinEvent& event) {
 	event.Skip();
 

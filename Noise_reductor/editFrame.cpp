@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-EditFrame::EditFrame(wxWindow* parent, InfoFrame* infoFrame, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style), m_imageHandler(imageHandler), _infoFrame(infoFrame)
+EditFrame::EditFrame(wxWindow* parent, InfoFrame* infoFrame, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style), m_imageHandler(imageHandler), m_infoFrame(infoFrame)
 {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 	this->Hide();
@@ -79,8 +79,12 @@ EditFrame::EditFrame(wxWindow* parent, InfoFrame* infoFrame, ImageHandler *image
 	wxBoxSizer* sizerSuwak;
 	sizerSuwak = new wxBoxSizer(wxVERTICAL);
 
+	sliderDesc = new wxStaticText(this, wxID_ANY, wxT("Wspó³czynnik rozmycia"), wxDefaultPosition, wxDefaultSize);
+	sliderDesc->Wrap(-1);
+	sizerSuwak->Add(sliderDesc, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 2);
+
 	slider1 = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL);
-	sizerSuwak->Add(slider1, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
+	sizerSuwak->Add(slider1, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 2);
 
 	sliderVal = new wxStaticText(this, wxID_ANY, wxT("0:"), wxDefaultPosition, wxDefaultSize);
 	sliderVal->Wrap(-1);
@@ -387,8 +391,11 @@ void EditFrame::OnScroll(wxWindowID id, int x, int y)
 
 void EditFrame::OnReset(wxCommandEvent & event)
 {
+	
 	m_imageHandler->resetModifiedImage();
+	m_infoFrame->update();
 	slider1->SetValue(0);
+	
 }
 
 void EditFrame::Save(wxCommandEvent & event)
@@ -415,14 +422,14 @@ void EditFrame::blurFragment(wxCommandEvent & event)
 {
 	gausssian_blur();
 	m_imageHandler->updateFragments();
-	_infoFrame->update();
+	m_infoFrame->update();
 }
 
 void EditFrame::blurFull(wxCommandEvent & event)
 {
 	gausssian_blur(false);
 	m_imageHandler->updateFragments();
-	_infoFrame->update();
+	m_infoFrame->update();
 }
 
 void EditFrame::setSliderLabel()

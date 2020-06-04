@@ -46,6 +46,7 @@ protected:
 	wxStaticLine* line1;
 	wxStaticLine* line2;
 	wxSlider* slider1;
+	wxStaticText* sliderDesc;
 	wxStaticText* sliderVal;
 	wxRadioBox* selectRepresentation;
 	wxRadioBox* selectRGB;
@@ -56,7 +57,7 @@ protected:
 	wxButton* resetButton;
 	wxButton* saveButton;
 	ImageHandler* m_imageHandler;
-	InfoFrame* _infoFrame;
+	InfoFrame* m_infoFrame;
 	
 public:
 

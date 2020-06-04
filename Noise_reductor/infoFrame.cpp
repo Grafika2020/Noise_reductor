@@ -12,9 +12,6 @@ InfoFrame::InfoFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	listBox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
 	sizer1info->Add(listBox, 1, wxALL | wxEXPAND, 5);
 
-	button = new wxButton(this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0);
-	sizer1info->Add(button, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-
 	this->SetSizer(sizer1info);
 	this->Layout();
 
@@ -23,7 +20,7 @@ InfoFrame::InfoFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	readData();
 
 	// Connect Events
-	button->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InfoFrame::closeInfo), NULL, this);
+	
 	this->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InfoFrame::OnClose));
 
 }
@@ -31,7 +28,6 @@ InfoFrame::InfoFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 InfoFrame::~InfoFrame()
 {
 	// Disconnect Events
-	button->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(InfoFrame::closeInfo), NULL, this);
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InfoFrame::OnClose));
 }
 
@@ -40,10 +36,7 @@ void InfoFrame::OnClose(wxCloseEvent &evt)
 	GetParent()->Destroy();
 }
 
-void InfoFrame::closeInfo(wxCommandEvent& event)
-{
-	this->Close();
-}
+
 
 void InfoFrame::readData() {
 
