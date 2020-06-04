@@ -211,6 +211,9 @@ void InitFrame::addFrag(wxMouseEvent& event)
 			marking = false;
 			frags_cord.push_back(second_click);
 			wxImage tmp_frag = m_imageHandler->getMainImage().GetSubImage(wxRect(first_click,second_click));
+			m_imageHandler->frag_pos1.push_back(first_click);
+			m_imageHandler->frag_pos2.push_back(second_click);
+
 			m_imageHandler->getFragments().push_back(tmp_frag);
 
 			framesDescription->SetLabel(wxString::Format(wxT("wybrano %i fragmentów:"), ++frag_num));
@@ -269,8 +272,8 @@ void InitFrame::substract(wxCommandEvent & evt)
 void InitFrame::openFrames( wxCommandEvent& event )
 {
 
-	InfoFrame* infoFrame = new InfoFrame(this, m_imageHandler, wxID_ANY, wxString("Informacje o obrazie"),wxDefaultPosition, wxSize(400,600), wxDEFAULT_FRAME_STYLE);
-	EditFrame* editFrame = new EditFrame(this, infoFrame, m_imageHandler, wxID_ANY, wxString("Edytuj obraz"), wxDefaultPosition, wxSize(1000, 600), wxDEFAULT_FRAME_STYLE);
+	InfoFrame* infoFrame = new InfoFrame(this, m_imageHandler);
+	EditFrame* editFrame = new EditFrame(this, infoFrame, m_imageHandler);
 	editFrame->Show();
 	infoFrame->Show();
 	this->Hide();
