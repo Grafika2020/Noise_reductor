@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-EditFrame::EditFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style),m_imageHandler(imageHandler)
+EditFrame::EditFrame(wxWindow* parent, InfoFrame* infoFrame, ImageHandler *imageHandler, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style), m_imageHandler(imageHandler), _infoFrame(infoFrame)
 {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 	this->Hide();
@@ -414,11 +414,15 @@ void EditFrame::Save(wxCommandEvent & event)
 void EditFrame::blurFragment(wxCommandEvent & event)
 {
 	gausssian_blur();
+	m_imageHandler->updateFragments();
+	_infoFrame->update();
 }
 
 void EditFrame::blurFull(wxCommandEvent & event)
 {
 	gausssian_blur(false);
+	m_imageHandler->updateFragments();
+	_infoFrame->update();
 }
 
 void EditFrame::setSliderLabel()

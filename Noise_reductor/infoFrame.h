@@ -37,6 +37,7 @@ protected:
 	wxButton* button;
 	ImageHandler *m_imageHandler;
 	wxListBox* listBox;
+
 	// Virtual event handlers, overide them in your derived class
 	void closeInfo(wxCommandEvent& event); 
 	
@@ -50,5 +51,6 @@ public:
 	void readData();
 	double max(double, double, double) const;
 	double min(double, double, double) const;
+	void update();
 
 };

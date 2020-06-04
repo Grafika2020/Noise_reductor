@@ -15,7 +15,10 @@ public:
 	void substractBlackImage(float level=0.0);
 	bool isBlackImage()const;
 	void resetModifiedImage();
+	void updateFragments();
 	std::vector<wxImage>& getFragments();
+	std::vector<wxPoint> frag_pos1;
+	std::vector<wxPoint> frag_pos2;
 	
 private: 
 	wxImage m_mainImage;
@@ -23,4 +26,5 @@ private:
 	wxImage m_blackImage;
 	bool blackImageStatus{ false };
 	std::vector<wxImage> fragments;
+
 };

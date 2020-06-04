@@ -24,6 +24,7 @@
 #include <wx/radiobox.h>
 #include "imageHandler.h"
 #include "synchronizedWindow.h"
+#include "infoFrame.h"
 
 
 #define imageOrginalID 5000
@@ -38,6 +39,7 @@ private:
 	int m_lastselected{ 0 };
 	
 protected:
+	
 	
 	SynchronizedWindow* imageOrginal;
 	SynchronizedWindow* imageModified;
@@ -54,10 +56,11 @@ protected:
 	wxButton* resetButton;
 	wxButton* saveButton;
 	ImageHandler* m_imageHandler;
+	InfoFrame* _infoFrame;
 	
 public:
 
-	EditFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
+	EditFrame(wxWindow* parent, InfoFrame* infoFrame = nullptr, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~EditFrame();
 	void gausssian_blur(bool fragment = true);

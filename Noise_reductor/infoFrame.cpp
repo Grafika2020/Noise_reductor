@@ -160,8 +160,17 @@ void InfoFrame::readData() {
 	if (!m_imageHandler->getFragments().empty()) {
 		listBox->InsertItems(str_arr, listBox->GetCount());
 	}
-	
 
+}
+
+
+void InfoFrame::update() {
+
+	while (listBox->GetCount()) {
+		listBox->Delete(listBox->GetCount() - 1);
+	};
+
+	readData();
 
 }
 
