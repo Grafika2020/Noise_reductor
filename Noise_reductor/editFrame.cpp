@@ -397,10 +397,10 @@ void EditFrame::OnReset(wxCommandEvent & event)
 {
 	
 	m_imageHandler->resetModifiedImage();
+	m_imageHandler->updateFragments();
 	m_infoFrame->update();
 	slider1->SetValue(0);
 
-	
 }
 
 void EditFrame::Save(wxCommandEvent & event)
@@ -431,16 +431,16 @@ void EditFrame::blurFragment(wxCommandEvent & event)
 
 }
 
-void EditFrame::blurFull(wxCommandEvent & event)
-{
-	wxDialog dialog(this, -1, "...");
-	dialog.SetSize(wxSize(300, 200));
-	dialog.CreateTextSizer("Prosze czekac! Trwa odszumianie!");
-	dialog.Show();
+void EditFrame::blurFull(wxCommandEvent & event) {
+
+	wxMessageDialog* dialog = new wxMessageDialog(this, "Prosze czekac! Trwa odszumianie!");
+	dialog->ShowModal();
+
 	gausssian_blur(false);
 	m_imageHandler->updateFragments();
 	m_infoFrame->update();
-	dialog.Show(false);
+
+	dialog->EndModal(1);
 
 }
 
@@ -501,7 +501,4 @@ void EditFrame::draw()
 
 		setSliderLabel();
 }
-
-
-
 
