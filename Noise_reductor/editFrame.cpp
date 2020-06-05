@@ -1,4 +1,4 @@
-#include "editFrame.h"
+ï»¿#include "editFrame.h"
 #include <wx/dcbuffer.h>
 #include <wx/filedlg.h>
 #include "CImg.h"
@@ -52,7 +52,7 @@ EditFrame::EditFrame(wxWindow* parent, InfoFrame* infoFrame, ImageHandler *image
 
 	wxString selectRepresentationChoices[] = { wxT("RGB"), wxT("HSL"), wxT("HSV") };
 	int selectRepresentationNChoices = sizeof(selectRepresentationChoices) / sizeof(wxString);
-	selectRepresentation = new wxRadioBox(this, wxID_ANY, wxT("Wybierz reprezentacjê"), wxDefaultPosition, wxDefaultSize, selectRepresentationNChoices, selectRepresentationChoices, 1, wxRA_SPECIFY_ROWS);
+	selectRepresentation = new wxRadioBox(this, wxID_ANY, wxT("Wybierz reprezentacjÃª"), wxDefaultPosition, wxDefaultSize, selectRepresentationNChoices, selectRepresentationChoices, 1, wxRA_SPECIFY_ROWS);
 	selectRepresentation->SetSelection(0);
 	sizer3modifyFragemtns->Add(selectRepresentation, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
@@ -79,7 +79,7 @@ EditFrame::EditFrame(wxWindow* parent, InfoFrame* infoFrame, ImageHandler *image
 	wxBoxSizer* sizerSuwak;
 	sizerSuwak = new wxBoxSizer(wxVERTICAL);
 
-	sliderDesc = new wxStaticText(this, wxID_ANY, wxT("Wspó³czynnik rozmycia"), wxDefaultPosition, wxDefaultSize);
+	sliderDesc = new wxStaticText(this, wxID_ANY, wxT("WspÃ³Â³czynnik rozmycia"), wxDefaultPosition, wxDefaultSize);
 	sliderDesc->Wrap(-1);
 	sizerSuwak->Add(sliderDesc, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 2);
 
@@ -99,7 +99,7 @@ EditFrame::EditFrame(wxWindow* parent, InfoFrame* infoFrame, ImageHandler *image
 	startButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj fragment"), wxDefaultPosition, wxDefaultSize, 0);
 	sizerOdszum->Add(startButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	fullImageButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj ca³y obraz"), wxDefaultPosition, wxDefaultSize, 0);
+	fullImageButton = new wxButton(this, wxID_ANY, wxT("Odszumiaj caÂ³y obraz"), wxDefaultPosition, wxDefaultSize, 0);
 	sizerOdszum->Add(fullImageButton, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
 	sizer3modifyFragemtns->Add(sizerOdszum, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
@@ -433,9 +433,14 @@ void EditFrame::blurFragment(wxCommandEvent & event)
 
 void EditFrame::blurFull(wxCommandEvent & event)
 {
+	wxDialog dialog(this, -1, "...");
+	dialog.SetSize(wxSize(300, 200));
+	dialog.CreateTextSizer("Prosze czekac! Trwa odszumianie!");
+	dialog.Show();
 	gausssian_blur(false);
 	m_imageHandler->updateFragments();
 	m_infoFrame->update();
+	dialog.Show(false);
 
 }
 

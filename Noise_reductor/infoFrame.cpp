@@ -110,7 +110,7 @@ void InfoFrame::readData() {
 			stream_avV, stream_avL, stream_sdR, stream_sdB,
 			stream_sdG, stream_sdV, stream_sdL;
 
-		new_data = "srednie:               R:";
+		new_data = "srednie:            R:";
 		stream_avR << std::fixed << std::setprecision(2) << avR;
 		new_data += stream_avR.str();
 
