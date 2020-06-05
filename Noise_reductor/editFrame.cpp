@@ -207,23 +207,23 @@ void EditFrame::gausssian_blur(bool fragment)
 
 void EditFrame::blur_RGB(float sigma, int channel, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
 {
-	cimg_library::CImg<unsigned char> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 2);
+	cimg_library::CImg<unsigned char>* image_to_blur = new cimg_library::CImg<unsigned char>(visible_area.GetWidth(), visible_area.GetHeight(), 1, 2);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
 	
 	if (channel == 0) {
 		for (int i = 0; i < visible_area.GetWidth(); i++) {
 			for (int j = 0; j < visible_area.GetHeight(); j++) {
-				image_to_blur(i, j) = original_img.GetRed(x+i, y+j);
+				(*image_to_blur)(i, j) = original_img.GetRed(x+i, y+j);
 			}
 		}
-		image_to_blur.blur(sigma);
+		image_to_blur->blur(sigma);
 
 		for (int i = 0; i < visible_area.GetWidth(); i++) {
 			for (int j = 0; j < visible_area.GetHeight(); j++) {
 				unsigned char gr = image_to_mod.GetGreen(x + i, y + j);
 				unsigned char bl = image_to_mod.GetBlue(x + i, y + j);
-				image_to_mod.SetRGB(x + i, y + j, image_to_blur(i, j), gr, bl);
+				image_to_mod.SetRGB(x + i, y + j, (*image_to_blur)(i, j), gr, bl);
 			}
 		}
 	}
@@ -231,16 +231,16 @@ void EditFrame::blur_RGB(float sigma, int channel, wxSize visible_area, wxPoint 
 	if (channel == 1) {
 		for (int i = 0; i < visible_area.GetWidth(); i++) {
 			for (int j = 0; j < visible_area.GetHeight(); j++) {
-				image_to_blur(i, j) = image_to_mod.GetGreen(x + i, y + j);
+				(*image_to_blur)(i, j) = image_to_mod.GetGreen(x + i, y + j);
 			}
 		}
-		image_to_blur.blur(sigma);
+		image_to_blur->blur(sigma);
 
 		for (int i = 0; i < visible_area.GetWidth(); i++) {
 			for (int j = 0; j < visible_area.GetHeight(); j++) {
 				unsigned char r = image_to_mod.GetRed(x + i, y + j);
 				unsigned char bl = image_to_mod.GetBlue(x + i, y + j);
-				image_to_mod.SetRGB(x + i, y + j,r, image_to_blur(i, j), bl);
+				image_to_mod.SetRGB(x + i, y + j,r, (*image_to_blur)(i, j), bl);
 			}
 		}
 	}
@@ -248,102 +248,105 @@ void EditFrame::blur_RGB(float sigma, int channel, wxSize visible_area, wxPoint 
 	if (channel == 2) {
 		for (int i = 0; i < visible_area.GetWidth(); i++) {
 			for (int j = 0; j < visible_area.GetHeight(); j++) {
-				image_to_blur(i, j) = image_to_mod.GetBlue(x + i, y + j);
+				(*image_to_blur)(i, j) = image_to_mod.GetBlue(x + i, y + j);
 			}
 		}
-		image_to_blur.blur(sigma);
+		image_to_blur->blur(sigma);
 
 		for (int i = 0; i < visible_area.GetWidth(); i++) {
 			for (int j = 0; j < visible_area.GetHeight(); j++) {
 				unsigned char gr = image_to_mod.GetGreen(x + i, y + j);
 				unsigned char r = image_to_mod.GetRed(x + i, y + j);
-				image_to_mod.SetRGB(x + i, y + j, r, gr, image_to_blur(i, j));
+				image_to_mod.SetRGB(x + i, y + j, r, gr, (*image_to_blur)(i, j));
 			}
 		}
 	}
 	
 	m_imageHandler->setModifiedImage(image_to_mod);
+	delete image_to_blur;
 }
 
 void EditFrame::blur_HSL(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
 {
-	cimg_library::CImg<float> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
+	cimg_library::CImg<float>* image_to_blur = new cimg_library::CImg<float>(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
 
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			image_to_blur(i, j, 0) = original_img.GetRed(x + i, y + j);
-			image_to_blur(i, j, 1) = original_img.GetGreen(x + i, y + j);
-			image_to_blur(i, j, 2) = original_img.GetBlue(x + i, y + j);
+			(*image_to_blur)(i, j, 0) = original_img.GetRed(x + i, y + j);
+			(*image_to_blur)(i, j, 1) = original_img.GetGreen(x + i, y + j);
+			(*image_to_blur)(i, j, 2) = original_img.GetBlue(x + i, y + j);
 		}
 	}
-	image_to_blur.RGBtoHSL();
-	cimg_library::CImg<float> valueArray(visible_area.GetWidth(), visible_area.GetHeight(), 1, 2);
+	image_to_blur->RGBtoHSL();
+	cimg_library::CImg<float> *valueArray = new cimg_library::CImg<float>(visible_area.GetWidth(), visible_area.GetHeight(), 1, 2);
 
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			valueArray(i, j) = image_to_blur(i, j, 2);
+			(*valueArray)(i, j) = (*image_to_blur)(i, j, 2);
 		}
 	}
 
-	valueArray.blur(sigma);
+	valueArray->blur(sigma);
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			image_to_blur(i, j, 2) = valueArray(i, j);
+			(*image_to_blur)(i, j, 2) = (*valueArray)(i, j);
 		}
 	}
 
-	image_to_blur.HSLtoRGB();
+	image_to_blur->HSLtoRGB();
 
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			image_to_mod.SetRGB(x + i, y + j, image_to_blur(i, j, 0), image_to_blur(i, j, 1), image_to_blur(i, j, 2));
+			image_to_mod.SetRGB(x + i, y + j, (*image_to_blur)(i, j, 0), (*image_to_blur)(i, j, 1), (*image_to_blur)(i, j, 2));
 		}
 	}
-
+	delete image_to_blur;
+	delete valueArray;
 	m_imageHandler->setModifiedImage(image_to_mod);
 }
 
 void EditFrame::blur_HSV(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img)
 {
-	cimg_library::CImg<float> image_to_blur(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
+	cimg_library::CImg<float>* image_to_blur = new cimg_library::CImg<float>(visible_area.GetWidth(), visible_area.GetHeight(), 1, 3);
 	const int x = start_of_view.x;
 	const int y = start_of_view.y;
 	
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			image_to_blur(i, j, 0) = original_img.GetRed(x + i, y + j);
-			image_to_blur(i, j, 1) = original_img.GetGreen(x + i, y + j);
-			image_to_blur(i, j, 2) = original_img.GetBlue(x + i, y + j);
+			(*image_to_blur)(i, j, 0) = original_img.GetRed(x + i, y + j);
+			(*image_to_blur)(i, j, 1) = original_img.GetGreen(x + i, y + j);
+			(*image_to_blur)(i, j, 2) = original_img.GetBlue(x + i, y + j);
 		}
 	}
-	image_to_blur.RGBtoHSV();
-	cimg_library::CImg<float> valueArray(visible_area.GetWidth(), visible_area.GetHeight(), 1, 2);
+	image_to_blur->RGBtoHSV();
+	cimg_library::CImg<float>* valueArray = new cimg_library::CImg<float>(visible_area.GetWidth(), visible_area.GetHeight(), 1, 2);
 
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			valueArray(i, j) = image_to_blur(i, j, 2);
+			(*valueArray)(i, j) = (*image_to_blur)(i, j, 2);
 		}
 	}
 
-	valueArray.blur(sigma);
+	valueArray->blur(sigma);
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			image_to_blur(i, j, 2) = valueArray(i, j);
+			(*image_to_blur)(i, j, 2) = (*valueArray)(i, j);
 		}
 	}
 
-	image_to_blur.HSVtoRGB();
+	image_to_blur->HSVtoRGB();
 
 	for (int i = 0; i < visible_area.GetWidth(); i++) {
 		for (int j = 0; j < visible_area.GetHeight(); j++) {
-			image_to_mod.SetRGB(x + i, y + j, image_to_blur(i, j, 0), image_to_blur(i, j, 1), image_to_blur(i, j, 2));
+			image_to_mod.SetRGB(x + i, y + j, (*image_to_blur)(i, j, 0), (*image_to_blur)(i, j, 1), (*image_to_blur)(i, j, 2));
 		}
 	}
 
 	m_imageHandler->setModifiedImage(image_to_mod);
-
+	delete image_to_blur;
+	delete valueArray;
 }
 
 void EditFrame::OnClose(wxCloseEvent & evt)
@@ -387,6 +390,7 @@ void EditFrame::OnScroll(wxWindowID id, int x, int y)
 {
 	if (id ==imageOrginalID) imageModified->Scroll(x, y);
 	if (id == imageModifiedID) imageOrginal->Scroll(x, y);
+
 }
 
 void EditFrame::OnReset(wxCommandEvent & event)
@@ -395,6 +399,7 @@ void EditFrame::OnReset(wxCommandEvent & event)
 	m_imageHandler->resetModifiedImage();
 	m_infoFrame->update();
 	slider1->SetValue(0);
+
 	
 }
 
@@ -423,6 +428,7 @@ void EditFrame::blurFragment(wxCommandEvent & event)
 	gausssian_blur();
 	m_imageHandler->updateFragments();
 	m_infoFrame->update();
+
 }
 
 void EditFrame::blurFull(wxCommandEvent & event)
@@ -430,6 +436,7 @@ void EditFrame::blurFull(wxCommandEvent & event)
 	gausssian_blur(false);
 	m_imageHandler->updateFragments();
 	m_infoFrame->update();
+
 }
 
 void EditFrame::setSliderLabel()
@@ -450,18 +457,41 @@ void EditFrame::draw()
 		wxBufferedDC buffOriginal(&clientDCOriginal);
 		wxBufferedDC buffModified(&clientDCModified);
 
-		
-		imageOrginal->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
-		imageModified->SetVirtualSize(m_imageHandler->getModifiedImage().GetSize());
+		wxSize imageSize = m_imageHandler->getMainImage().GetSize();
+
+		imageOrginal->SetVirtualSize(imageSize);
+		imageModified->SetVirtualSize(imageSize);
+
+
+		wxPoint orgStart = imageOrginal->CalcUnscrolledPosition(wxPoint(0, 0));
+		wxPoint modStart = imageModified->CalcUnscrolledPosition(wxPoint(0, 0));
+
+		wxSize orgSize = imageOrginal->GetSize();
+		wxSize modSize = imageModified->GetSize();
+
+		//optimalization part
+		if (orgSize.GetWidth() > imageSize.GetWidth() - orgStart.x ) {
+			orgSize.SetWidth(imageSize.GetWidth() - orgStart.x) ;
+		}
+		if (orgSize.GetHeight() > imageSize.GetHeight() - orgStart.y) {
+			orgSize.SetHeight(imageSize.GetHeight() - orgStart.y) ;
+		}
+		if (modSize.GetWidth() > imageSize.GetWidth() - modStart.x) {
+			modSize.SetWidth(imageSize.GetWidth() - modStart.x) ;
+		}
+		if (modSize.GetHeight() > imageSize.GetHeight() - modStart.y) {
+			modSize.SetHeight(imageSize.GetHeight() - modStart.y) ;
+		}
+
 
 		imageOrginal->DoPrepareDC(buffOriginal);
 		imageModified->DoPrepareDC(buffModified);
 
-		wxBitmap bmpOri(m_imageHandler->getMainImage());
-		wxBitmap bmpMod(m_imageHandler->getModifiedImage());
+		wxBitmap bmpOri(m_imageHandler->getMainImage().GetSubImage(wxRect(orgStart, orgSize)));
+		wxBitmap bmpMod(m_imageHandler->getModifiedImage().GetSubImage(wxRect(modStart, modSize)));
 
-		buffOriginal.DrawBitmap(bmpOri, wxPoint(0, 0));
-		buffModified.DrawBitmap(bmpMod, wxPoint(0, 0));
+		buffOriginal.DrawBitmap(bmpOri, imageOrginal->CalcUnscrolledPosition(wxPoint(0, 0)));
+		buffModified.DrawBitmap(bmpMod, imageModified->CalcUnscrolledPosition(wxPoint(0, 0)));
 
 
 		setSliderLabel();
