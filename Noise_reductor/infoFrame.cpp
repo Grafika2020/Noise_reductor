@@ -46,11 +46,11 @@ void InfoFrame::readData() {
 
 		int elements = 0;
 		std::string new_data;
-		double avR, avB, avG, avL, avV;
+		float avR, avB, avG, avL, avV;
 		unsigned long long int R, B, G;
-		double L, V;
+		float L, V;
 		R = B = G = L = V = 0;
-		double cmax, cmin;
+		float cmax, cmin;
 
 		for (int i = 0; i < frag.GetWidth(); ++i) {
 			for (int j = 0; j < frag.GetHeight(); ++j) {
@@ -74,7 +74,7 @@ void InfoFrame::readData() {
 		avL = L / static_cast<double>(elements);
 		avV = V / static_cast<double>(elements);
 		
-		double sdR, sdG, sdB, sdL, sdV;
+		float sdR, sdG, sdB, sdL, sdV;
 		sdR = sdG = sdB = sdL = sdV = 0;
 		for (int i = 0; i < frag.GetWidth(); ++i) {
 			for (int j = 0; j < frag.GetHeight(); ++j) {
@@ -177,10 +177,10 @@ void InfoFrame::update() {
 
 }
 
-double InfoFrame::max(double a, double b, double c) const {
+float InfoFrame::max(float a, float b, float c) const {
 	return a > b ? (a > c ? a : c) : (b > c ? b : c);
 }
 
-double InfoFrame::min(double a, double b, double c) const {
+float InfoFrame::min(float a, float b, float c) const {
 	return a < b ? (a < c ? a : c) : (b < c ? b : c);
 }

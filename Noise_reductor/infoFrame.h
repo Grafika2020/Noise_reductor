@@ -45,8 +45,8 @@ public:
 	void OnClose(wxCloseEvent &evt);
 
 	void readData();
-	double max(double, double, double) const;
-	double min(double, double, double) const;
+	float max(float, float, float) const;
+	float min(float, float, float) const;
 	void update();
 
 };
