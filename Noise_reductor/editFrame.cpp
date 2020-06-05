@@ -349,18 +349,18 @@ void EditFrame::blur_HSV(float sigma, wxSize visible_area, wxPoint start_of_view
 	delete valueArray;
 }
 
-void EditFrame::OnClose(wxCloseEvent & evt)
+void EditFrame::OnClose(wxCloseEvent & event)
 {
 	GetParent()->Destroy();
 }
 
-void EditFrame::OnUpdateUI(wxUpdateUIEvent & evt)
+void EditFrame::OnUpdateUI(wxUpdateUIEvent & event)
 {
 	draw();
 
 }
 
-void EditFrame::OnRadioBox(wxCommandEvent & evt)
+void EditFrame::OnRadioBox(wxCommandEvent & event)
 {
 	int selection = selectRepresentation->GetSelection();
 

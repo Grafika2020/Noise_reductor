@@ -31,7 +31,7 @@ InfoFrame::~InfoFrame()
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(InfoFrame::OnClose));
 }
 
-void InfoFrame::OnClose(wxCloseEvent &evt)
+void InfoFrame::OnClose(wxCloseEvent &event)
 {
 	GetParent()->Destroy();
 }

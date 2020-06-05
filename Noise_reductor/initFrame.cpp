@@ -115,7 +115,7 @@ InitFrame::~InitFrame()
 	this->Disconnect(wxEVT_UPDATE_UI, wxUpdateUIEventHandler(InitFrame::OnUpdateUI), NULL, this);
 }
 
-void InitFrame::OnClose(wxCloseEvent & evt)
+void InitFrame::OnClose(wxCloseEvent & event)
 {
 	Destroy();
 }
@@ -135,12 +135,12 @@ void InitFrame::OnShow()
 
 }
 
-void InitFrame::OnScroll(wxScrollEvent & evt)
+void InitFrame::OnScroll(wxScrollEvent & event)
 {
 	draw();
 }
 
-void InitFrame::OnUpdateUI(wxUpdateUIEvent & evt)
+void InitFrame::OnUpdateUI(wxUpdateUIEvent & event)
 {
 	draw();
 	
@@ -240,7 +240,7 @@ void InitFrame::addFrag(wxMouseEvent& event)
 
 }
 
-void InitFrame::addBlackImage(wxCommandEvent & evt)
+void InitFrame::addBlackImage(wxCommandEvent & event)
 {
 	wxInitAllImageHandlers();
 
@@ -275,7 +275,7 @@ void InitFrame::addBlackImage(wxCommandEvent & evt)
 
 }
 
-void InitFrame::substract(wxCommandEvent & evt)
+void InitFrame::substract(wxCommandEvent & event)
 {
 	float level = slider->GetValue()/10.0;
 	m_imageHandler->substractBlackImage(level);
