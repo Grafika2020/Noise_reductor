@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
@@ -22,6 +22,7 @@
 #include <wx/slider.h>
 #include <wx/listbox.h>
 #include <wx/radiobox.h>
+#include <wx/msgdlg.h>
 #include "imageHandler.h"
 #include "synchronizedWindow.h"
 #include "infoFrame.h"
@@ -79,4 +80,3 @@ public:
 	void setSliderLabel();
 	void draw();
 };
-
