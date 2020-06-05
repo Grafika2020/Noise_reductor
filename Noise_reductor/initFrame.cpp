@@ -170,7 +170,7 @@ void InitFrame::draw()
 		buff.DrawBitmap(bmp, wxPoint(0, 0));
 		wxSize img_size = m_imageHandler->getMainImage().GetSize();
 		buff.SetBrush(*wxTRANSPARENT_BRUSH);
-		buff.SetPen(wxPen(wxColour(160, 75, 75), 5));
+		buff.SetPen(wxPen(wxColour(35, 35, 35), 3));
 		if (!frags_cord.empty() && frags_cord.size() % 2 == 0) {
 			for (unsigned i = 0; i < frags_cord.size(); i += 2) {
 				int j = i + 1;

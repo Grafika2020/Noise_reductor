@@ -113,35 +113,45 @@ void InfoFrame::readData() {
 		new_data = "srednie:               R:";
 		stream_avR << std::fixed << std::setprecision(2) << avR;
 		new_data += stream_avR.str();
-		new_data += ", B:";
-		stream_avB << std::fixed << std::setprecision(2) << avB;
-		new_data += stream_avB.str();
+
 		new_data += ", G:";
 		stream_avG << std::fixed << std::setprecision(2) << avG;
 		new_data += stream_avG.str();
-		new_data += ", V:";
-		stream_avV << std::fixed << std::setprecision(2) << avV;
-		new_data += stream_avV.str();
+
+		new_data += ", B:";
+		stream_avB << std::fixed << std::setprecision(2) << avB;
+		new_data += stream_avB.str();
+
 		new_data += ", L:";
 		stream_avL << std::fixed << std::setprecision(2) << avL;
 		new_data += stream_avL.str();
+
+		new_data += ", V:";
+		stream_avV << std::fixed << std::setprecision(2) << avV;
+		new_data += stream_avV.str();
+
 		str_arr.Add(wxString(new_data));
 
 		new_data = "odchyl. stand.: R:";
 		stream_sdR << std::fixed << std::setprecision(2) << sdR;
 		new_data += stream_sdR.str();
-		new_data += "%, B:";
-		stream_sdB << std::fixed << std::setprecision(2) << sdB;
-		new_data += stream_sdB.str();
+
 		new_data += "%, G:";
 		stream_sdG << std::fixed << std::setprecision(2) << sdG;
 		new_data += stream_sdG.str();
-		new_data += "%, V:";
-		stream_sdV << std::fixed << std::setprecision(2) << sdV;
-		new_data += stream_sdV.str();
+
+		new_data += "%, B:";
+		stream_sdB << std::fixed << std::setprecision(2) << sdB;
+		new_data += stream_sdB.str();
+		
 		new_data += "%, L:";
 		stream_sdL << std::fixed << std::setprecision(2) << sdL;
 		new_data += stream_sdL.str();
+
+		new_data += "%, V:";
+		stream_sdV << std::fixed << std::setprecision(2) << sdV;
+		new_data += stream_sdV.str();
+		
 		new_data += "%";
 		str_arr.Add(wxString(new_data));
 
