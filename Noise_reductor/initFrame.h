@@ -54,6 +54,7 @@ protected:
 	wxPoint windowMoved = wxPoint(0, 0);
 	std::vector<wxPoint> frags_cord;
 	bool marking = false;
+	bool initFlag = false;
 	int frag_num = 0;
 	
 

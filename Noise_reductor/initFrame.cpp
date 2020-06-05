@@ -162,12 +162,24 @@ void InitFrame::draw()
 		wxClientDC clientDC(loadedImagePanel);
 		wxBufferedDC buff(&clientDC);
 
-		loadedImagePanel->SetVirtualSize(m_imageHandler->getMainImage().GetSize());
+		wxSize imageSize = m_imageHandler->getMainImage().GetSize();
+
+		loadedImagePanel->SetVirtualSize(imageSize);
+
+		wxPoint imgStart = loadedImagePanel->CalcUnscrolledPosition(wxPoint(0, 0));
+		wxSize imgSize = loadedImagePanel->GetSize();
+		if (imgSize.GetWidth() > imageSize.GetWidth() - imgStart.x) {
+			imgSize.SetWidth(imageSize.GetWidth() - imgStart.x);
+		}
+		if (imgSize.GetHeight() > imageSize.GetHeight() - imgStart.y) {
+			imgSize.SetHeight(imageSize.GetHeight() - imgStart.y);
+		}
 
 		loadedImagePanel->DoPrepareDC(buff);
 
-		wxBitmap bmp(m_imageHandler->getMainImage());
-		buff.DrawBitmap(bmp, wxPoint(0, 0));
+		wxBitmap bmp(m_imageHandler->getMainImage().GetSubImage(wxRect(imgStart, imgSize)));
+		buff.DrawBitmap(bmp, imgStart);
+		
 		wxSize img_size = m_imageHandler->getMainImage().GetSize();
 		buff.SetBrush(*wxTRANSPARENT_BRUSH);
 		buff.SetPen(wxPen(wxColour(35, 35, 35), 3));
@@ -194,16 +206,17 @@ void InitFrame::addFrag(wxMouseEvent& event)
 {
 	windowMoved = loadedImagePanel->CalcUnscrolledPosition(wxPoint(0, 0));
 	if (event.LeftDown()) {
+		initFlag = true;
 		first_click = event.GetPosition();
 		first_click += windowMoved;
 		frags_cord.push_back(first_click);
 	}
-	if (event.Dragging()) {
+	if (event.Dragging() && initFlag) {
 		moving_cursor = event.GetPosition();
 		moving_cursor += windowMoved;
 		marking = true;
 	}
-	if (event.LeftUp()) {
+	if (event.LeftUp() && initFlag) {
 		second_click = event.GetPosition();
 		second_click += windowMoved;
 		wxSize img_size = m_imageHandler->getMainImage().GetSize();

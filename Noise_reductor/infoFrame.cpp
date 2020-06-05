@@ -9,7 +9,7 @@ InfoFrame::InfoFrame(wxWindow* parent, ImageHandler *imageHandler, wxWindowID id
 	wxBoxSizer* sizer1info;
 	sizer1info = new wxBoxSizer(wxVERTICAL);
 
-	listBox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	listBox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_HSCROLL);
 	sizer1info->Add(listBox, 1, wxALL | wxEXPAND, 5);
 
 	this->SetSizer(sizer1info);
