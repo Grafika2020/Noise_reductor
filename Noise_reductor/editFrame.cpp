@@ -433,14 +433,9 @@ void EditFrame::blurFragment(wxCommandEvent & event)
 
 void EditFrame::blurFull(wxCommandEvent & event) {
 
-	wxMessageDialog* dialog = new wxMessageDialog(this, "Prosze czekac! Trwa odszumianie!");
-	dialog->ShowModal();
-
 	gausssian_blur(false);
 	m_imageHandler->updateFragments();
 	m_infoFrame->update();
-
-	dialog->EndModal(1);
 
 }
 
