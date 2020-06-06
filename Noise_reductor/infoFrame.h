@@ -42,7 +42,7 @@ public:
 	InfoFrame(wxWindow* parent, ImageHandler *imageHandler = nullptr, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(600, 300), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~InfoFrame();
-	void OnClose(wxCloseEvent &evt);
+	void OnClose(wxCloseEvent &event);
 
 	void readData();
 	float max(float, float, float) const;

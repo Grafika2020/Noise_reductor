@@ -63,13 +63,13 @@ public:
 	InitFrame(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1000, 700), long style = wxDEFAULT_FRAME_STYLE ^ wxRESIZE_BORDER);
 
 	~InitFrame();
-	void OnClose(wxCloseEvent &evt);
+	void OnClose(wxCloseEvent &event);
 	void OnShow();
-	void OnScroll(wxScrollEvent &evt);
-	void OnUpdateUI(wxUpdateUIEvent &evt);
+	void OnScroll(wxScrollEvent &event);
+	void OnUpdateUI(wxUpdateUIEvent &event);
 	void draw();
 	void addFrag(wxMouseEvent& event);
-	void addBlackImage(wxCommandEvent &evt);
-	void substract(wxCommandEvent &evt);
+	void addBlackImage(wxCommandEvent &event);
+	void substract(wxCommandEvent &event);
 	void setSliderLabel();
 };

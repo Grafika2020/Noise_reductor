@@ -69,9 +69,9 @@ public:
 	void blur_RGB(float sigma, int channel, wxSize visible_area, wxPoint starrt_of_view, wxImage image_to_mod, wxImage original_img);
 	void blur_HSL(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
 	void blur_HSV(float sigma, wxSize visible_area, wxPoint start_of_view, wxImage image_to_mod, wxImage original_img);
-	void OnClose(wxCloseEvent &evt);
-	void OnUpdateUI(wxUpdateUIEvent &evt);
-	void OnRadioBox(wxCommandEvent &evt);
+	void OnClose(wxCloseEvent &event);
+	void OnUpdateUI(wxUpdateUIEvent &event);
+	void OnRadioBox(wxCommandEvent &event);
 	void OnScroll(wxWindowID id, int x, int y);
 	void OnReset(wxCommandEvent& event);
 	void Save(wxCommandEvent& event);
